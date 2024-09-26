@@ -12,13 +12,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /* Local includes */
-import org.firstinspires.ftc.teamcode.robots.ChainTrain;
+import org.firstinspires.ftc.teamcode.robots.ChainDriveTrain;
 
 @TeleOp()
-public class ChainTrainManualMode extends OpMode {
+public class ChainDriveTrainManualMode extends OpMode {
         /** Class managing configuration and control of a basic chain train **/
 
-        ChainTrain robot = new ChainTrain(); /** Chain train control object **/
+        ChainDriveTrain robot = new ChainDriveTrain(); /** Chain train control object **/
 
         @Override
         public void init(){

@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-public class ChainTrain {
+public class ChainDriveTrain {
     /** Class managing configuration and control of a basic chain train **/
 
     private     double      m_right_ticks_per_rotation = 0;
