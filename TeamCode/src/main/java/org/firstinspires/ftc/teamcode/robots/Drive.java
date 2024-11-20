@@ -42,6 +42,13 @@ public class Drive {
     protected Map<String, Encoder>    m_encoders;
     protected Map<String, Double>     m_ticks_per_rotation;
 
+    protected double                  m_fwd_in_per_ticks;
+    protected double                  m_lat_in_per_ticks;
+    protected double                  m_track_width_ticks;
+    protected double                  m_ks;
+    protected double                  m_ka;
+    protected double                  m_kv;
+
     protected Telemetry               m_logger;
 
     public Drive(Telemetry logger) {
@@ -125,6 +132,12 @@ public class Drive {
                 logo_direction, usb_direction));
         m_imu.get().resetYaw();
 
+        m_fwd_in_per_ticks = config.fwdTicks();
+        m_lat_in_per_ticks = config.latTicks();
+        m_track_width_ticks = config.trackTicks();
+        m_ks = config.kS();
+        m_kv = config.kV();
+        m_ka = config.kA();
 
     }
 
@@ -144,6 +157,25 @@ public class Drive {
     }
     public LazyImu imu() {
         return m_imu;
+    }
+
+    public double fwdTicks() {
+        return m_fwd_in_per_ticks;
+    }
+    public double latTicks() {
+        return m_lat_in_per_ticks;
+    }
+    public double trackTicks() {
+        return m_track_width_ticks;
+    }
+    public double kS() {
+        return m_ks;
+    }
+    public double kV() {
+        return m_kv;
+    }
+    public double kA() {
+        return m_ka;
     }
 
 }

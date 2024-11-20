@@ -209,6 +209,13 @@ public final class MecanumDrive {
     public MecanumDrive(HardwareMap hardwareMap, Pose2d pose, Drive drive) {
         this.pose = pose;
 
+        MecanumDrive.PARAMS.inPerTick = drive.fwdTicks();
+        MecanumDrive.PARAMS.lateralInPerTick = drive.latTicks();
+        MecanumDrive.PARAMS.trackWidthTicks = drive.trackTicks();
+        MecanumDrive.PARAMS.kS = drive.kS();
+        MecanumDrive.PARAMS.kV = drive.kV();
+        MecanumDrive.PARAMS.kA = drive.kA();
+
         LynxFirmware.throwIfModulesAreOutdated(hardwareMap);
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {

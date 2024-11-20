@@ -28,6 +28,12 @@ import org.firstinspires.ftc.teamcode.robots.Component;
 class Model {
     public String name;
     public String drive;
+    public double fwd_in_per_tick;
+    public double lat_in_per_tick;
+    public double track_width_ticks;
+    public double ks;
+    public double kv;
+    public double ka;
     public List<Component> components;
 }
 
@@ -49,6 +55,12 @@ public class Configuration {
         m_model = new Model();
         m_model.name = jsonObj.getString("name");
         m_model.drive = jsonObj.getString("drive");
+        m_model.fwd_in_per_tick = Double.parseDouble(jsonObj.getString("fwd-in-per-tick"));
+        m_model.lat_in_per_tick = Double.parseDouble(jsonObj.getString("lat-in-per-tick"));
+        m_model.track_width_ticks = Double.parseDouble(jsonObj.getString("track-width-ticks"));
+        m_model.ks = Double.parseDouble(jsonObj.getString("ks"));
+        m_model.kv = Double.parseDouble(jsonObj.getString("kv"));
+        m_model.ka = Double.parseDouble(jsonObj.getString("ka"));
         m_model.components = new ArrayList<>();
 
         JSONArray componentsArray = jsonObj.getJSONArray("components");
@@ -95,6 +107,24 @@ public class Configuration {
     }
     public String drive() {
         return m_model.drive;
+    }
+    public double fwdTicks() {
+        return m_model.fwd_in_per_tick;
+    }
+    public double latTicks() {
+        return m_model.lat_in_per_tick;
+    }
+    public double trackTicks() {
+        return m_model.track_width_ticks;
+    }
+    public double kA() {
+        return m_model.ka;
+    }
+    public double kV() {
+        return m_model.kv;
+    }
+    public double kS() {
+        return m_model.ks;
     }
 
 }
