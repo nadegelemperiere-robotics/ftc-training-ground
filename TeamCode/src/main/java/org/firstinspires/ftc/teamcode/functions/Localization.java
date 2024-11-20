@@ -24,11 +24,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-import org.firstinspires.ftc.vision.apriltag.AprilTagMetadata;
 
 /* Local includes */
 import org.firstinspires.ftc.teamcode.functions.Configuration;
@@ -85,7 +83,8 @@ public class Localization {
                 m_current_position = Localization.compute_position(detection.robotPose, detection.frameAcquisitionNanoTime);
                 m_current_orientation = Localization.compute_orientation(detection.robotPose, detection.frameAcquisitionNanoTime);
 
-                m_logger.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                m_logger.addLine(String.format("\n===> LOCALIZATION"));
+                m_logger.addLine(String.format("TAG %d : %s", detection.id, detection.metadata.name));
                 m_logger.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)",
                         m_current_position.x,
                         m_current_position.y,

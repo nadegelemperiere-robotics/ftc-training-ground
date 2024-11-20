@@ -22,6 +22,8 @@ public class Component {
     public VectorF  m_position;
     public VectorF  m_orientation;
 
+    public String   m_reverse;
+
     public Component()
     {
         m_position = new VectorF(0,0,0);
@@ -43,6 +45,9 @@ public class Component {
         m_orientation.put(0, (float) orient.getDouble("roll"));
         m_orientation.put(1, (float) orient.getDouble("pitch"));
         m_orientation.put(2, (float) orient.getDouble("yaw"));
+
+
+        if ( Json.has("reverse")) { m_reverse = Json.getString("reverse"); }
         
     }
 

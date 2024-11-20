@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.configurations.MecanumDriveTrain;
 public class MecanumDriveTrainAutonomousMode extends OpMode {
         /** Class managing configuration and control of a basic chain train **/
 
-        private Timing           m_timer;               
+        private Timing           m_timing;               
         private Configuration   m_configuration;
         private Localization    m_localization;
 
@@ -35,7 +35,7 @@ public class MecanumDriveTrainAutonomousMode extends OpMode {
 
                 /* Timing creation */
                 try {
-                        m_timer = new Timing();
+                        m_timing = new Timing(telemetry);
                         telemetry.addLine("OpMode - Timing initialized");
                 } catch (Exception e) {
                        telemetry.addLine("OpMode - Failed to create timer with error " + e);
@@ -67,9 +67,9 @@ public class MecanumDriveTrainAutonomousMode extends OpMode {
         public void loop(){
 
                 /* Compute processing time */
-                double delay = m_timer.update();
+                double delay = m_timing.update();
                 telemetry.addLine("OpMode - Delay : " + delay + " s");
-                telemetry.addLine("OpMode - Processing frequency : " + m_timer.frequency());
+                telemetry.addLine("OpMode - Processing frequency : " + m_timing.frequency());
 
                 /* Update localization */
                 m_localization.update();

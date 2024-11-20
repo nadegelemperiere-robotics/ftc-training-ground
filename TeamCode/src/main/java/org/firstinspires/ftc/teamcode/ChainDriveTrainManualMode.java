@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.configurations.ChainDriveTrain;
 public class ChainDriveTrainManualMode extends OpMode {
         /** Class managing configuration and control of a basic chain train **/
 
-        private Timing          m_timer;
+        private Timing          m_timing;
         private Configuration   m_configuration;
         private Piloting        m_piloting;
 
@@ -34,7 +34,7 @@ public class ChainDriveTrainManualMode extends OpMode {
 
                 /* Timing creation */
                 try {
-                        m_timer = new Timing();
+                        m_timing = new Timing(telemetry);
                         telemetry.addLine("OpMode - Timing initialized");
                 } catch (Exception e) {
                         telemetry.addLine("OpMode - Failed to create timer with error " + e);
@@ -51,7 +51,7 @@ public class ChainDriveTrainManualMode extends OpMode {
 
                 /* Initialize piloting */
                 try {
-                        m_piloting = Piloting.Builder(m_configuration,telemetry);
+                        m_piloting = Piloting.Builder(m_configuration,Piloting.Centricity.FIELD,telemetry);
                         m_piloting.configure(hardwareMap, gamepad1, m_configuration);
                         telemetry.addLine("OpMode - Piloting initialized");
                 } catch (Exception e) {
@@ -64,9 +64,9 @@ public class ChainDriveTrainManualMode extends OpMode {
         public void loop(){
 
                 /* Compute processing time */
-                double delay = m_timer.update();
+                double delay = m_timing.update();
                 telemetry.addLine("OpMode - Delay : " + delay + " s");
-                telemetry.addLine("OpMode - Processing frequency : " + m_timer.frequency());
+                telemetry.addLine("OpMode - Processing frequency : " + m_timing.frequency());
 
                 /* Update piloting */
                 m_piloting.update();

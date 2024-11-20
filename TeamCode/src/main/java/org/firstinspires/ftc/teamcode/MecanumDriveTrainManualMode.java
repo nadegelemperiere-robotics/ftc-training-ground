@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.configurations.MecanumDriveTrain;
 public class MecanumDriveTrainManualMode extends OpMode {
         /** Class managing configuration and control of a basic chain train **/
 
-        private Timing          m_timer;
+        private Timing          m_timing;
         private Configuration   m_configuration;
         private Localization    m_localization;
         private Piloting        m_piloting;
@@ -37,7 +37,7 @@ public class MecanumDriveTrainManualMode extends OpMode {
 
                 /* Timing creation */
                 try {
-                        m_timer = new Timing();
+                        m_timing = new Timing(telemetry);
                         telemetry.addLine("OpMode - Timing initialized");
                 } catch (Exception e) {
                         telemetry.addLine("OpMode - Failed to create timer with error " + e);
@@ -63,7 +63,7 @@ public class MecanumDriveTrainManualMode extends OpMode {
 
                 /* Initialize piloting */
                 try {
-                        m_piloting = Piloting.Builder(m_configuration,telemetry);
+                        m_piloting = Piloting.Builder(m_configuration,Piloting.Centricity.FIELD, telemetry);
                         m_piloting.configure(hardwareMap, gamepad1, m_configuration);
                         telemetry.addLine("OpMode - Piloting initialized");
                 } catch (Exception e) {
@@ -76,9 +76,7 @@ public class MecanumDriveTrainManualMode extends OpMode {
         public void loop(){
 
                 /* Compute processing time */
-                double delay = m_timer.update();
-                telemetry.addLine("OpMode - Delay : " + delay + " s");
-                telemetry.addLine("OpMode - Processing frequency : " + m_timer.frequency());
+                m_timing.update();
 
                 /* Update localization */
                 m_localization.update();
