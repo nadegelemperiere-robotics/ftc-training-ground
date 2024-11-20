@@ -22,11 +22,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
+import org.firstinspires.ftc.teamcode.configurations.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.functions.Configuration;
+import org.firstinspires.ftc.teamcode.robots.Drive;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.TankDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.TwoDeadWheelLocalizer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,9 +57,20 @@ public final class TuningOpModes {
         if (DISABLED) return;
 
         DriveViewFactory dvf;
+
         if (DRIVE_CLASS.equals(MecanumDrive.class)) {
             dvf = hardwareMap -> {
-                MecanumDrive md = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+                /* Parse robot configuration */
+                Configuration config = new Configuration();
+                Drive drive = new Drive();
+                try {
+                    config.read(MecanumDriveTrain.s_Configuration);
+                    drive.configure(hardwareMap,config);
+                } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage());
+                }
+
+                MecanumDrive md = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0),drive);
 
                 List<Encoder> leftEncs = new ArrayList<>(), rightEncs = new ArrayList<>();
                 List<Encoder> parEncs = new ArrayList<>(), perpEncs = new ArrayList<>();
@@ -106,7 +121,16 @@ public final class TuningOpModes {
             };
         } else if (DRIVE_CLASS.equals(TankDrive.class)) {
             dvf = hardwareMap -> {
-                TankDrive td = new TankDrive(hardwareMap, new Pose2d(0, 0, 0));
+                /* Parse robot configuration */
+                Configuration config = new Configuration();
+                Drive drive = new Drive();
+                try {
+                    config.read(MecanumDriveTrain.s_Configuration);
+                    drive.configure(hardwareMap,config);
+                } catch (Exception e) {
+
+                }
+                TankDrive td = new TankDrive(hardwareMap, new Pose2d(0, 0, 0), drive);
 
                 List<Encoder> leftEncs = new ArrayList<>(), rightEncs = new ArrayList<>();
                 List<Encoder> parEncs = new ArrayList<>(), perpEncs = new ArrayList<>();

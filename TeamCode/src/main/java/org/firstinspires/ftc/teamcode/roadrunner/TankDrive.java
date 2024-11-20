@@ -51,6 +51,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.TankCommandMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.TankLocalizerInputsMessage;
+import org.firstinspires.ftc.teamcode.robots.Drive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -133,27 +134,19 @@ public final class TankDrive {
         private double lastLeftPos, lastRightPos;
         private boolean initialized;
 
-        public DriveLocalizer() {
+        public DriveLocalizer(Drive drive) {
             {
                 List<Encoder> leftEncs = new ArrayList<>();
-                for (DcMotorEx m : leftMotors) {
-                    Encoder e = new OverflowEncoder(new RawEncoder(m));
-                    leftEncs.add(e);
-                }
+                leftEncs.add(drive.encoder("left-wheel"));
                 this.leftEncs = Collections.unmodifiableList(leftEncs);
             }
 
             {
                 List<Encoder> rightEncs = new ArrayList<>();
-                for (DcMotorEx m : rightMotors) {
-                    Encoder e = new OverflowEncoder(new RawEncoder(m));
-                    rightEncs.add(e);
-                }
+                leftEncs.add(drive.encoder("right-wheel"));
                 this.rightEncs = Collections.unmodifiableList(rightEncs);
             }
 
-            // TODO: reverse encoder directions if needed
-            //   leftEncs.get(0).setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         @Override
@@ -212,7 +205,7 @@ public final class TankDrive {
         }
     }
 
-    public TankDrive(HardwareMap hardwareMap, Pose2d pose) {
+    public TankDrive(HardwareMap hardwareMap, Pose2d pose, Drive drive) {
         this.pose = pose;
 
         LynxFirmware.throwIfModulesAreOutdated(hardwareMap);
@@ -224,8 +217,8 @@ public final class TankDrive {
         // TODO: make sure your config has motors with these names (or change them)
         //   add additional motors on each side if you have them
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftMotors = Arrays.asList(hardwareMap.get(DcMotorEx.class, "left"));
-        rightMotors = Arrays.asList(hardwareMap.get(DcMotorEx.class, "right"));
+        leftMotors = Arrays.asList(drive.wheel("left-wheel"));
+        rightMotors = Arrays.asList(drive.wheel("right-wheel"));
 
         for (DcMotorEx m : leftMotors) {
             m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -244,7 +237,7 @@ public final class TankDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        localizer = new TankDrive.DriveLocalizer();
+        localizer = new TankDrive.DriveLocalizer(drive);
 
         FlightRecorder.write("TANK_PARAMS", PARAMS);
     }

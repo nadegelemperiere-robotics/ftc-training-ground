@@ -14,6 +14,7 @@ public class ChainDriveTrain {
 
     public static String s_Configuration = "{"
             + "\"name\": \"ChainDriveTrain\","
+            + "\"drive\": \"tank\","
             + "\"components\": ["
                 + "{"
                     + "\"name\": \"right-wheel\","

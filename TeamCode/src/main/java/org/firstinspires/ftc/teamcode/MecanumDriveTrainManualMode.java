@@ -63,7 +63,7 @@ public class MecanumDriveTrainManualMode extends OpMode {
 
                 /* Initialize piloting */
                 try {
-                        m_piloting = Piloting.Builder(m_configuration,Piloting.Centricity.FIELD, telemetry);
+                        m_piloting = Piloting.Builder(m_configuration,Piloting.Centricity.ROBOT, telemetry);
                         m_piloting.configure(hardwareMap, gamepad1, m_configuration);
                         telemetry.addLine("OpMode - Piloting initialized");
                 } catch (Exception e) {

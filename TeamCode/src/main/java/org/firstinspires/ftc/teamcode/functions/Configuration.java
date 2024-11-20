@@ -27,16 +27,20 @@ import org.firstinspires.ftc.teamcode.robots.Component;
 
 class Model {
     public String name;
+    public String drive;
     public List<Component> components;
 }
 
 public class Configuration {
 
-    private Telemetry           m_logger;
+    private Telemetry           m_logger = null;
     private Model               m_model;
 
     public Configuration(Telemetry logger) {
         m_logger = logger;
+    }
+
+    public Configuration() {
     }
 
     public void read(String Json) throws JSONException {
@@ -44,6 +48,7 @@ public class Configuration {
         JSONObject jsonObj = new JSONObject(Json);
         m_model = new Model();
         m_model.name = jsonObj.getString("name");
+        m_model.drive = jsonObj.getString("drive");
         m_model.components = new ArrayList<>();
 
         JSONArray componentsArray = jsonObj.getJSONArray("components");
@@ -77,12 +82,19 @@ public class Configuration {
                     result.add(component);
                 }
             } catch (NoSuchFieldException | IllegalAccessException e) {
-                m_logger.addLine("Configuration - Invalid topic: " + topic);
+                if(m_logger != null) { m_logger.addLine("Configuration - Invalid topic: " + topic); }
                 throw new IOException("Configuration error");
             }
         }
         
         return result;
+    }
+
+    public String name() {
+        return m_model.name;
+    }
+    public String drive() {
+        return m_model.drive;
     }
 
 }
