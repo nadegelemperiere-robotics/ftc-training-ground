@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.configurations.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.functions.Configuration;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.TankDrive;
-import org.firstinspires.ftc.teamcode.robots.Drive;
+import org.firstinspires.ftc.teamcode.robot.Drive;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ public final class SplineTest extends LinearOpMode {
             Actions.runBlocking(
                 md.actionBuilder(beginPose)
                         .splineTo(new Vector2d(30, 30), Math.PI / 2)
-                        .splineTo(new Vector2d(0, 60), Math.PI)
+                        //.splineTo(new Vector2d(0, 60), Math.PI)
                         .build());
         } else if (TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
             TankDrive td = new TankDrive(hardwareMap, beginPose, drive);

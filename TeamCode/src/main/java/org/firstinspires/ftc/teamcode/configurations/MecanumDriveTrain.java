@@ -8,6 +8,8 @@
 package org.firstinspires.ftc.teamcode.configurations;
 
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+
 public class MecanumDriveTrain {
     /**
      * Class managing configuration and control of a basic chain train
@@ -16,12 +18,25 @@ public class MecanumDriveTrain {
     public static String s_Configuration = "{"
             + "\"name\": \"MecanumDriveTrain\","
             + "\"drive\": \"mecanum\","
-            + "\"fwd-in-per-tick\":\"0.025679\","
-            + "\"lat-in-per-tick\":\"0.025679\","
-            + "\"track-width-ticks\":\"1648.8405974891646\","
-            + "\"ks\":\"0.5532344924978014\","
-            + "\"kv\":\"0.004382910398567615\","
-            + "\"ka\":\"0.0003\","
+            + "\"roadrunner\": {"
+                + "\"inPerTick\" :\"0.01838175\n\","
+                + "\"lateralInPerTick\":\"0.015811966\n\","
+                + "\"trackWidthTicks\":\"1648.8405974891646\","
+                + "\"kS\":\"0.4921592103058434\","
+                + "\"kV\":\"0.004414507494850345\","
+                + "\"kA\":\"0.0003\","
+                + "\"maxAngVel\":\"3.14159265\","
+                + "\"maxAngAccel\":\"3.14159265\","
+                + "\"axialGain\":\"6.0\","
+                + "\"lateralGain\":\"6.0\","
+                + "\"headingGain\":\"6.0\","
+                + "\"axialVelGain\":\"0.0\","
+                + "\"lateralVelGain\":\"0.0\","
+                + "\"headingVelGain\":\"0.0\","
+                + "\"maxWheelVel\":\"50.0\","
+                + "\"minProfileAccel\":\"-30.0\","
+                + "\"maxProfileAccel\":\"50.0\""
+            + "},"
             + "\"components\": ["
                 + "{"
                     + "\"name\": \"right-front-wheel\","

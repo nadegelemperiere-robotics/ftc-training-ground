@@ -5,7 +5,7 @@
    Robot component description
    ------------------------------------------------------- */
    
-package org.firstinspires.ftc.teamcode.robots;
+package org.firstinspires.ftc.teamcode.robot;
 
 /* Json parser includes */
 import org.json.JSONException;

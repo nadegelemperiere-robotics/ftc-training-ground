@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /* Local includes */
-import org.firstinspires.ftc.teamcode.robots.Drive;
+import org.firstinspires.ftc.teamcode.robot.Drive;
 
 public class Piloting {
     /** Class managing configuration and control of a basic chain train **/
@@ -155,7 +155,6 @@ class MecanumPiloting extends Piloting {
         m_drive.configure(map,config);
         m_controller = gamepad;
 
-
         if (m_drive.wheel("left-front-wheel") == null) {
             m_logger.addLine("Piloting - Missing left front wheel for omniwheels configuration");
             throw new IOException("Piloting configuration failed");
@@ -172,7 +171,6 @@ class MecanumPiloting extends Piloting {
             m_logger.addLine("Piloting - Missing right back wheel for omniwheels configuration");
             throw new IOException("Piloting configuration failed");
         }
-
 
         m_drive.wheel("left-back-wheel").setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         m_drive.wheel("left-front-wheel").setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -238,16 +236,16 @@ class MecanumPiloting extends Piloting {
                     frontRightPower,
                     backLeftPower,
                     backRightPower));
-            m_logger.addLine(String.format("ENC LF RF LB RB  %d %d %d %d",
+            m_logger.addLine(String.format("ECP LF RF LB RB  %d %d %d %d",
                     m_drive.encoder("left-front-wheel").getPositionAndVelocity().position,
                     m_drive.encoder("right-front-wheel").getPositionAndVelocity().position,
                     m_drive.encoder("left-back-wheel").getPositionAndVelocity().position,
                     m_drive.encoder("right-back-wheel").getPositionAndVelocity().position));
-            m_logger.addLine(String.format("DIR LF RF LB RB  %s %s %s %s",
-                    m_drive.wheel("left-front-wheel").getDirection().toString(),
-                    m_drive.wheel("right-front-wheel").getDirection().toString(),
-                    m_drive.wheel("left-back-wheel").getDirection().toString(),
-                    m_drive.wheel("right-back-wheel").getDirection().toString()));
+            m_logger.addLine(String.format("ECV LF RF LB RB  %d %d %d %d",
+                    m_drive.encoder("left-front-wheel").getPositionAndVelocity().velocity,
+                    m_drive.encoder("right-front-wheel").getPositionAndVelocity().velocity,
+                    m_drive.encoder("left-back-wheel").getPositionAndVelocity().velocity,
+                    m_drive.encoder("right-back-wheel").getPositionAndVelocity().velocity));
 
         }
         else

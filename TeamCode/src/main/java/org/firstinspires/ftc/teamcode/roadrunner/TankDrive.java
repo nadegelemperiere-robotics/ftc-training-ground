@@ -51,7 +51,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.TankCommandMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.TankLocalizerInputsMessage;
-import org.firstinspires.ftc.teamcode.robots.Drive;
+import org.firstinspires.ftc.teamcode.robot.Drive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -207,6 +207,8 @@ public final class TankDrive {
 
     public TankDrive(HardwareMap hardwareMap, Pose2d pose, Drive drive) {
         this.pose = pose;
+
+        TankDrive.PARAMS = drive.rrTank();
 
         LynxFirmware.throwIfModulesAreOutdated(hardwareMap);
 

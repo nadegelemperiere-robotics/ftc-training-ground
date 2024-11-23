@@ -30,7 +30,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 /* Local includes */
 import org.firstinspires.ftc.teamcode.functions.Configuration;
-import org.firstinspires.ftc.teamcode.robots.Component;
+import org.firstinspires.ftc.teamcode.robot.Component;
 
 
 public class Localization {

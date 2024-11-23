@@ -45,7 +45,8 @@ import org.firstinspires.ftc.teamcode.roadrunner.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
-import org.firstinspires.ftc.teamcode.robots.Drive;
+import org.firstinspires.ftc.teamcode.robot.Drive;
+import org.firstinspires.ftc.teamcode.functions.Timing;
 
 import java.io.IOException;
 import java.lang.Math;
@@ -84,9 +85,9 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 0.0;
-        public double lateralGain = 0.0;
-        public double headingGain = 0.0; // shared with turn
+        public double axialGain = 1.0;
+        public double lateralGain = 1.0;
+        public double headingGain = 1.0; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -116,6 +117,8 @@ public final class MecanumDrive {
 
     public final Localizer localizer;
     public Pose2d pose;
+    public Timing timer = new Timing();
+    public Pose2d last_pose;
 
     private final LinkedList<Pose2d> poseHistory = new LinkedList<>();
 
@@ -209,12 +212,7 @@ public final class MecanumDrive {
     public MecanumDrive(HardwareMap hardwareMap, Pose2d pose, Drive drive) {
         this.pose = pose;
 
-        MecanumDrive.PARAMS.inPerTick = drive.fwdTicks();
-        MecanumDrive.PARAMS.lateralInPerTick = drive.latTicks();
-        MecanumDrive.PARAMS.trackWidthTicks = drive.trackTicks();
-        MecanumDrive.PARAMS.kS = drive.kS();
-        MecanumDrive.PARAMS.kV = drive.kV();
-        MecanumDrive.PARAMS.kA = drive.kA();
+        MecanumDrive.PARAMS = drive.rrMecanum();
 
         LynxFirmware.throwIfModulesAreOutdated(hardwareMap);
 
@@ -329,9 +327,13 @@ public final class MecanumDrive {
             rightBack.setPower(rightBackPower);
             rightFront.setPower(rightFrontPower);
 
+            double period = timer.update();
+
+            p.put("ms", period * 1000);
             p.put("x", pose.position.x);
             p.put("y", pose.position.y);
             p.put("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
+            p.put("heading mes (deg)",lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
             Pose2d error = txWorldTarget.value().minusExp(pose);
             p.put("xError", error.position.x);
@@ -351,6 +353,8 @@ public final class MecanumDrive {
             c.setStroke("#4CAF50FF");
             c.setStrokeWidth(1);
             c.strokePolyline(xPoints, yPoints);
+
+            last_pose = pose;
 
             return true;
         }

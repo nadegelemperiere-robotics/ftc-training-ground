@@ -26,6 +26,13 @@ public class Timing {
         m_max_intervals = 20;
         m_logger = logger;
     }
+    
+    public Timing()
+    {
+        m_last_call_time = -1;
+        m_intervals = new LinkedList<>();
+        m_max_intervals = 20;
+    }
 
     public void reset()
     {
@@ -35,7 +42,7 @@ public class Timing {
 
     public double update() {
 
-        double result = -1;
+        double result = 0;
 
         long current_time = System.nanoTime(); // Get current time in nanoseconds
 
@@ -52,10 +59,12 @@ public class Timing {
         // Update last call time for the next interval
         m_last_call_time = current_time;
 
-        m_logger.addLine(String.format("\n===> TIMING "));
-        m_logger.addLine(String.format("PF %6.1f ms %6.1f Hz",
-            result * 1000,
-            this.frequency()));
+        if(m_logger != null) {
+            m_logger.addLine(String.format("\n===> TIMING "));
+            m_logger.addLine(String.format("PF %6.1f ms %6.1f Hz",
+                    result * 1000,
+                    this.frequency()));
+        }
             
         return result;
 

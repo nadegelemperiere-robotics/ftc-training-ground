@@ -9,13 +9,13 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.functions.Configuration;
-import org.firstinspires.ftc.teamcode.robots.Drive;
+import org.firstinspires.ftc.teamcode.robot.Drive;
 import org.firstinspires.ftc.teamcode.roadrunner.Drawing;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.TankDrive;
 import org.firstinspires.ftc.teamcode.configurations.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.robots.Drive;
 
 import java.io.IOException;
 
@@ -51,11 +51,19 @@ public class LocalizationTest extends LinearOpMode {
 
                 md.updatePoseEstimate();
 
+                double period = md.timer.update();
+                telemetry.addData("ms", period * 1000);
+                if(md.last_pose != null) {
+                    telemetry.addData("delta_x", md.pose.position.x - md.last_pose.position.x);
+                }
                 telemetry.addData("x", md.pose.position.x);
                 telemetry.addData("y", md.pose.position.y);
                 telemetry.addData("heading (deg)", Math.toDegrees(md.pose.heading.toDouble()));
+                telemetry.addData("heading mes (deg)",md.lazyImu.get().getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
                 telemetry.update();
 
+                md.last_pose = md.pose;
                 TelemetryPacket packet = new TelemetryPacket();
                 packet.fieldOverlay().setStroke("#3F51B5");
                 Drawing.drawRobot(packet.fieldOverlay(), md.pose);

@@ -5,7 +5,7 @@
    Robot drive initialization ( wheels motor + imu)
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.robots;
+package org.firstinspires.ftc.teamcode.robot;
 
 /* System includes */
 import java.io.IOException;
@@ -17,7 +17,6 @@ import java.util.HashMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 /* Ftc Controller includes */
@@ -28,6 +27,8 @@ import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.acmerobotics.roadrunner.ftc.LazyImu;
+import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.roadrunner.TankDrive;
 
 /* Local includes */
 import org.firstinspires.ftc.teamcode.functions.Configuration;
@@ -41,13 +42,9 @@ public class Drive {
     protected Map<String, DcMotorEx>  m_wheels;
     protected Map<String, Encoder>    m_encoders;
     protected Map<String, Double>     m_ticks_per_rotation;
-
-    protected double                  m_fwd_in_per_ticks;
-    protected double                  m_lat_in_per_ticks;
-    protected double                  m_track_width_ticks;
-    protected double                  m_ks;
-    protected double                  m_ka;
-    protected double                  m_kv;
+    
+    protected MecanumDrive.Params     m_rr_mecanum;
+    protected TankDrive.Params        m_rr_tank;
 
     protected Telemetry               m_logger;
 
@@ -70,6 +67,13 @@ public class Drive {
         m_encoders.clear();
         m_ticks_per_rotation.clear();
 
+        if(config.drive().equals("mecanum")) {
+            m_rr_mecanum = config.rrMecanum();
+        }
+        if(config.drive().equals("tank")) {
+            m_rr_tank = config.rrTank();
+        }
+
         /* Motors configuration */
         List<Component> motors = config.get("type","motor");
         for (Component component : motors) {
@@ -77,6 +81,10 @@ public class Drive {
 
                 m_wheels.put(component.m_name, map.get(DcMotorEx.class, component.m_hardware));
                 m_encoders.put(component.m_name, new OverflowEncoder(new RawEncoder(m_wheels.get(component.m_name))));
+
+                /* Set encoders to position 0 */
+                m_wheels.get(component.m_name).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                m_wheels.get(component.m_name).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                 if (component.m_reverse.equals("true")) {
                     if(m_logger != null) { m_logger.addLine("Reversing wheel " + component.m_name);}
@@ -123,21 +131,18 @@ public class Drive {
         if (usb_orientation == Angles.Direction.FRONT)   { usb_direction = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;}
         if (usb_orientation == Angles.Direction.BACK)    { usb_direction = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;}
 
-        IMU.Parameters parameters = new IMU.Parameters(
-                new RevHubOrientationOnRobot(
-                        logo_direction,
-                        usb_direction));
-
         m_imu = new LazyImu(map, imu.get(0).m_hardware, new RevHubOrientationOnRobot(
                 logo_direction, usb_direction));
         m_imu.get().resetYaw();
 
-        m_fwd_in_per_ticks = config.fwdTicks();
-        m_lat_in_per_ticks = config.latTicks();
-        m_track_width_ticks = config.trackTicks();
-        m_ks = config.kS();
-        m_kv = config.kV();
-        m_ka = config.kA();
+        if(config.drive().equals("mecanum")) {
+            m_rr_mecanum.logoFacingDirection = logo_direction;
+            m_rr_mecanum.usbFacingDirection = usb_direction;
+        }
+        if(config.drive().equals("tank")) {
+            m_rr_tank.logoFacingDirection = logo_direction;
+            m_rr_tank.usbFacingDirection = usb_direction;
+        }
 
     }
 
@@ -155,27 +160,24 @@ public class Drive {
         }
         return result;
     }
+
+    public Map<String, DcMotorEx> wheels() {
+        return m_wheels;
+    }
+
+    public Map<String, Encoder> encoders() {
+        return m_encoders;
+    }
+
     public LazyImu imu() {
         return m_imu;
     }
 
-    public double fwdTicks() {
-        return m_fwd_in_per_ticks;
+    public MecanumDrive.Params rrMecanum() {
+        return m_rr_mecanum;
     }
-    public double latTicks() {
-        return m_lat_in_per_ticks;
-    }
-    public double trackTicks() {
-        return m_track_width_ticks;
-    }
-    public double kS() {
-        return m_ks;
-    }
-    public double kV() {
-        return m_kv;
-    }
-    public double kA() {
-        return m_ka;
+    public TankDrive.Params rrTank() {
+        return m_rr_tank;
     }
 
 }

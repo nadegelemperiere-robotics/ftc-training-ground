@@ -20,21 +20,20 @@ import org.json.JSONObject;
 /* Ftc Controller includes */
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-/* Local includes */
+/* Roadrunner includes */
+import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.roadrunner.TankDrive;
 
 /* Local includes */
-import org.firstinspires.ftc.teamcode.robots.Component;
+import org.firstinspires.ftc.teamcode.robot.Component;
 
 class Model {
     public String name;
     public String drive;
-    public double fwd_in_per_tick;
-    public double lat_in_per_tick;
-    public double track_width_ticks;
-    public double ks;
-    public double kv;
-    public double ka;
     public List<Component> components;
+    public MecanumDrive.Params rr_mecanum;
+    public TankDrive.Params rr_tank;
+
 }
 
 public class Configuration {
@@ -49,20 +48,55 @@ public class Configuration {
     public Configuration() {
     }
 
-    public void read(String Json) throws JSONException {
+    public void read(String Json) throws JSONException, IOException {
         
         JSONObject jsonObj = new JSONObject(Json);
         m_model = new Model();
         m_model.name = jsonObj.getString("name");
         m_model.drive = jsonObj.getString("drive");
-        m_model.fwd_in_per_tick = Double.parseDouble(jsonObj.getString("fwd-in-per-tick"));
-        m_model.lat_in_per_tick = Double.parseDouble(jsonObj.getString("lat-in-per-tick"));
-        m_model.track_width_ticks = Double.parseDouble(jsonObj.getString("track-width-ticks"));
-        m_model.ks = Double.parseDouble(jsonObj.getString("ks"));
-        m_model.kv = Double.parseDouble(jsonObj.getString("kv"));
-        m_model.ka = Double.parseDouble(jsonObj.getString("ka"));
-        m_model.components = new ArrayList<>();
 
+        JSONObject roadrunnerObject = jsonObj.getJSONObject("roadrunner");
+        if(m_model.drive.equals("mecanum")) {
+            m_model.rr_mecanum = new MecanumDrive.Params();
+            m_model.rr_mecanum.inPerTick = Double.parseDouble(roadrunnerObject.getString("inPerTick"));
+            m_model.rr_mecanum.lateralInPerTick = Double.parseDouble(roadrunnerObject.getString("lateralInPerTick"));
+            m_model.rr_mecanum.trackWidthTicks = Double.parseDouble(roadrunnerObject.getString("trackWidthTicks"));
+            m_model.rr_mecanum.kS = Double.parseDouble(roadrunnerObject.getString("kS"));
+            m_model.rr_mecanum.kA = Double.parseDouble(roadrunnerObject.getString("kA"));
+            m_model.rr_mecanum.kV = Double.parseDouble(roadrunnerObject.getString("kV"));
+            m_model.rr_mecanum.axialGain = Double.parseDouble(roadrunnerObject.getString("axialGain"));
+            m_model.rr_mecanum.lateralGain = Double.parseDouble(roadrunnerObject.getString("lateralGain"));
+            m_model.rr_mecanum.headingGain = Double.parseDouble(roadrunnerObject.getString("headingGain"));
+            m_model.rr_mecanum.axialVelGain = Double.parseDouble(roadrunnerObject.getString("axialVelGain"));
+            m_model.rr_mecanum.lateralVelGain = Double.parseDouble(roadrunnerObject.getString("lateralVelGain"));
+            m_model.rr_mecanum.headingVelGain = Double.parseDouble(roadrunnerObject.getString("headingVelGain"));
+            m_model.rr_mecanum.maxAngAccel = Double.parseDouble(roadrunnerObject.getString("maxAngAccel"));
+            m_model.rr_mecanum.maxAngVel = Double.parseDouble(roadrunnerObject.getString("maxAngVel"));
+            m_model.rr_mecanum.maxProfileAccel = Double.parseDouble(roadrunnerObject.getString("maxProfileAccel"));
+            m_model.rr_mecanum.maxWheelVel = Double.parseDouble(roadrunnerObject.getString("maxWheelVel"));
+            m_model.rr_mecanum.minProfileAccel = Double.parseDouble(roadrunnerObject.getString("minProfileAccel"));
+        }
+        else if(m_model.drive.equals("tank")) {
+            m_model.rr_tank = new TankDrive.Params();
+            m_model.rr_tank.inPerTick = Double.parseDouble(roadrunnerObject.getString("inPerTick"));
+            m_model.rr_tank.trackWidthTicks = Double.parseDouble(roadrunnerObject.getString("trackWidthTicks"));
+            m_model.rr_tank.kS = Double.parseDouble(roadrunnerObject.getString("kS"));
+            m_model.rr_tank.kA = Double.parseDouble(roadrunnerObject.getString("kA"));
+            m_model.rr_tank.kV = Double.parseDouble(roadrunnerObject.getString("kV"));
+            m_model.rr_tank.maxAngVel = Double.parseDouble(roadrunnerObject.getString("maxAngVel"));
+            m_model.rr_tank.maxAngAccel = Double.parseDouble(roadrunnerObject.getString("maxAngAccel"));
+            m_model.rr_tank.maxWheelVel = Double.parseDouble(roadrunnerObject.getString("maxWheelVel"));
+            m_model.rr_tank.minProfileAccel = Double.parseDouble(roadrunnerObject.getString("minProfileAccel"));
+            m_model.rr_tank.ramseteBBar = Double.parseDouble(roadrunnerObject.getString("ramseteBBar"));
+            m_model.rr_tank.ramseteZeta = Double.parseDouble(roadrunnerObject.getString("ramseteZeta"));
+            m_model.rr_tank.turnGain = Double.parseDouble(roadrunnerObject.getString("turnGain"));
+            m_model.rr_tank.turnVelGain = Double.parseDouble(roadrunnerObject.getString("turnVelGain"));
+        }
+        else {
+            throw new IOException("Unknown drive mode " + m_model.drive);
+        }
+
+        m_model.components = new ArrayList<>();
         JSONArray componentsArray = jsonObj.getJSONArray("components");
         for (int i = 0; i < componentsArray.length(); i++) {
 
@@ -108,23 +142,11 @@ public class Configuration {
     public String drive() {
         return m_model.drive;
     }
-    public double fwdTicks() {
-        return m_model.fwd_in_per_tick;
+    public MecanumDrive.Params rrMecanum() {
+        return m_model.rr_mecanum;
     }
-    public double latTicks() {
-        return m_model.lat_in_per_tick;
-    }
-    public double trackTicks() {
-        return m_model.track_width_ticks;
-    }
-    public double kA() {
-        return m_model.ka;
-    }
-    public double kV() {
-        return m_model.kv;
-    }
-    public double kS() {
-        return m_model.ks;
+    public TankDrive.Params rrTank() {
+        return m_model.rr_tank;
     }
 
 }
