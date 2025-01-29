@@ -1,0 +1,111 @@
+{
+    "hardware" : {
+        "motors": {
+            "front-left-wheel": {
+                "controllers": [
+                    { "hwmap": "frontLeft" }
+                ]
+            },
+            "front-right-wheel": {
+                "controllers": [
+                    { "hwmap": "frontRight" }
+                ]
+            },
+            "back-left-wheel": {
+                "controllers": [
+                    { "hwmap": "backLeft", "direction": "reverse" }
+                ]
+            },
+            "back-right-wheel": {
+                "controllers": [
+                    { "hwmap": "backRight", "direction": "reverse" }
+                ]
+            },
+            "intake-slides": {
+                "controllers": [
+                    { "hwmap": "intakeSlidesLeft",  "direction": "reverse" },
+                    { "hwmap": "intakeSlidesRight", "direction": "reverse" }
+                ],
+                "positions": {
+                    "min": 0,
+                    "transfer": 173,
+                    "retracted": 250,
+                    "init": 300,
+                    "max": 358
+                }
+            },
+            "outtake-slides": {
+                "controllers": [
+                    { "hwmap": "outtakeSlidesLeft" },
+                    { "hwmap": "outtakeSlidesRight" }
+                ],
+                "positions": {
+                    "min": 0,
+                    "transfer": 0,
+                    "retracted": 1300,
+                    "high-basket": 10,
+                    "low-basket": 10,
+                    "low-submersible": 10,
+                    "high-submersible":10
+                }
+            }
+        },
+        "imus": {
+            "built-in": {
+                "hwmap": "imu",
+                "logo-direction": "up",
+                "usb-direction": "backward"
+            }
+        },
+        "servos": {
+            "intake-wrist-roll": {
+                "controllers": [
+                    { "hwmap": "left" }
+                ],
+                "positions" : {
+                    "-2": 0.27,
+                    "-1": 0.335,
+                    "0" : 0.405,
+                    "1" : 0.47,
+                    "2" : 0.54,
+                    "3" : 0.605,
+                    "4" : 0.675,
+                    "5" : 0.74,
+                    "6" : 0.82
+                }
+            },
+            "intake-claw": {
+                "controllers": [
+                    { "hwmap": "right" }
+                ],
+                "positions" : {
+                    "closed" : 1.0,
+                    "microrelease" : 0.98,
+                    "open" : 0.62
+                }
+            },
+            "outtake-wrist-roll": {
+                "controllers": [
+                    { "hwmap": "left", "reverse" : true }
+                ]
+            },
+            "outtake-claw": {
+                "controllers": [
+                    { "hwmap": "right", "reverse" : true }
+                ]
+            },
+            "outtake-elbow-pitch" : {
+                "controllers": [
+                    { "hwmap": "left" },
+                    { "hwmap": "right", "reverse": true }
+                ]
+            },
+            "toto" : {
+                "controllers": [
+                    { "hwmap": "unknown" }
+                ]
+            }
+        }
+    }
+}
+

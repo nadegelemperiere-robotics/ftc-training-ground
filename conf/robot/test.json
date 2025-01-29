@@ -1,0 +1,47 @@
+{
+    "hardware" : {
+        "motors": {
+            "front-left-wheel": {
+                "controllers": [
+                    { "hwmap": "frontLeft" }
+                ]
+            },
+            "front-right-wheel": {
+                "controllers": [
+                    { "hwmap": "frontRight" }
+                ]
+            },
+            "back-left-wheel": {
+                "controllers": [
+                    { "hwmap": "backLeft", "direction": "reverse" }
+                ]
+            },
+            "back-right-wheel": {
+                "controllers": [
+                    { "hwmap": "backRight", "direction": "reverse" }
+                ]
+            }
+        },
+        "imus": {
+            "built-in": {
+                "hwmap": "imu",
+                "logo-direction": "up",
+                "usb-direction": "backward"
+            }
+        },
+        "servos": {
+            "intake-arm-pitch" : {
+                "controllers": [
+                    { "hwmap": "left", "reverse": true },
+                    { "hwmap": "right" }
+                ],
+                "positions": {
+                    "transfer": 0.65,
+                    "overSub": 0.23,
+                    "look": 0.13,
+                    "grab": 0.07
+                }
+            }
+        }
+    }
+}

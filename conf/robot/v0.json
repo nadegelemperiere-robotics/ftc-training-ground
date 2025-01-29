@@ -1,0 +1,36 @@
+{
+    "hardware" : {
+        "motors": {
+            "front-left-wheel": {
+                "controllers" : [
+                    {"hwmap": "frontLeft", "direction": "reverse" }
+                ]
+            },
+            "front-right-wheel": {
+                "controllers" : [
+                    {"hwmap": "frontRight" }
+                ]
+            },
+            "back-left-wheel": {
+                "controllers" : [
+                    {"hwmap": "backLeft", "direction": "reverse" }
+                ]
+            },
+            "back-right-wheel": {
+                "controllers" : [
+                    {"hwmap": "backRight", "direction": "reverse" }
+                ]
+            }
+        },
+        "imu": {
+            "built-in": {
+                "hwmap": "imu",
+                "logo-direction": "up",
+                "usb-direction": "backward"
+            },
+            "otos": {
+                "hwmap": "sensor_otos"
+            }
+        }
+    }
+}
