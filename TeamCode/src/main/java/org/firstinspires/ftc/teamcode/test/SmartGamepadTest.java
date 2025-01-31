@@ -17,7 +17,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 /* Components includes */
 import org.firstinspires.ftc.teamcode.core.components.SmartGamepad;
 
-@TeleOp(name = "Smart Gamepad Test", group = "Test")
+@TeleOp(name = "SmartGamepadTest", group = "Test")
 public class SmartGamepadTest extends LinearOpMode {
 
     private enum Suite {

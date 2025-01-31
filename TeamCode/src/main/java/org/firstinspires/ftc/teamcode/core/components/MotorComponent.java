@@ -52,6 +52,7 @@ public interface MotorComponent {
     String                      logPositions();
     boolean                     isReady();
     String                      getName();
+    boolean                     getEncoderCorrection();
 
     /* --------------------- DcMotor functions --------------------- */
 

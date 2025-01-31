@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.core.tools.Logger;
 import org.firstinspires.ftc.teamcode.core.configuration.Configuration;
 import org.json.JSONException;
 
-@TeleOp(name = "Configuration Test", group = "Test")
+@TeleOp(name = "ConfigurationTest", group = "Test")
 public class ConfigurationTest extends LinearOpMode {
 
     private enum Suite {

@@ -27,9 +27,16 @@
                 "hwmap": "imu",
                 "logo-direction": "up",
                 "usb-direction": "backward"
-            },
+            }
+        },
+        "odometers": {
             "otos": {
-                "hwmap": "sensor_otos"
+                "hwmap": "otos",
+                "heading-offset" : 0.0,
+                "x-offset" : 0.0,
+                "y-offset" : 0.0,
+                "heading-ratio" : 1.0,
+                "position-ratio" : 1.0
             }
         }
     }

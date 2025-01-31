@@ -17,7 +17,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 /* Component Under Test includes */
 import org.firstinspires.ftc.teamcode.core.tools.Logger;
 
-@TeleOp(name = "Logger Test", group = "Test")
+@TeleOp(name = "LoggerTest", group = "Test")
 public class LoggerTest extends LinearOpMode {
 
     private enum Suite {

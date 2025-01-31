@@ -7,13 +7,33 @@
 
 package org.firstinspires.ftc.teamcode.core.tools;
 
+/* System includes */
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /* FTC Controller includes */
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /* ACME robotics includes */
 import com.acmerobotics.dashboard.FtcDashboard;
 
+
 public class Logger {
+
+    public static class Line {
+
+        Map<Target, Telemetry.Line> mLines;
+        public Line() {
+            mLines = new LinkedHashMap<>();
+        }
+    };
+    public static class Item {
+
+        Map<Target, Telemetry.Item> mItems;
+        public Item() {
+            mItems = new LinkedHashMap<>();
+        }
+    }
 
     public enum Target {
         DRIVER_STATION,
@@ -35,31 +55,95 @@ public class Logger {
     }
 
 
-    public void addLine(Target target, String line) {
+    public Line addLine(Target target, String line) {
+        Line result = new Line();
         if (target == Target.DRIVER_STATION && mDriverStation != null) {
-            mDriverStation.addLine(line);
+            result.mLines.put(Target.DRIVER_STATION,mDriverStation.addLine(line));
         } else if (target == Target.DASHBOARD && mDashboard != null) {
-            mDashboard.getTelemetry().addLine(line);
+            result.mLines.put(Target.DASHBOARD,mDashboard.getTelemetry().addLine(line));
+        }
+        return result;
+    }
+
+    public Line addLine(String line) {
+        Line result = new Line();
+        if (mDriverStation != null) {
+            result.mLines.put(Target.DRIVER_STATION,mDriverStation.addLine(line));
+        }
+        if ( mDashboard != null)    {
+            result.mLines.put(Target.DASHBOARD,mDashboard.getTelemetry().addLine(line));
+        }
+        return result;
+    }
+
+    public void removeLine(Target target, Line line) {
+        if (target == Target.DRIVER_STATION &&
+                mDriverStation != null &&
+                line.mLines.containsKey(Target.DRIVER_STATION )) {
+            mDriverStation.removeLine(line.mLines.get(Target.DRIVER_STATION));
+        } else if (target == Target.DASHBOARD &&
+                mDashboard != null &&
+                line.mLines.containsKey(Target.DRIVER_STATION )) {
+            mDashboard.getTelemetry().removeLine(line.mLines.get(Target.DASHBOARD));
         }
     }
 
-    public void addLine(String line) {
-        if (mDriverStation != null) { mDriverStation.addLine(line); }
-        if ( mDashboard != null)    { mDashboard.getTelemetry().addLine(line); }
-    }
-
-    public void addData(Target target, String first, String second) {
-        if (target == Target.DRIVER_STATION && mDriverStation != null) {
-            mDriverStation.addData(first, second);
-        } else if (target == Target.DASHBOARD && mDashboard != null) {
-            mDashboard.getTelemetry().addData(first, second);
+    public void removeLine(Line line) {
+        if (mDriverStation != null &&
+                line.mLines.containsKey(Target.DRIVER_STATION )) {
+            mDriverStation.removeLine(line.mLines.get(Target.DRIVER_STATION));
+        }
+        if ( mDashboard != null &&
+            line.mLines.containsKey(Target.DRIVER_STATION )) {
+                mDashboard.getTelemetry().removeLine(line.mLines.get(Target.DASHBOARD));
         }
     }
 
-    public void addData(String first, String second) {
-        if (mDriverStation != null) { mDriverStation.addData(first, second); }
-        if (mDashboard != null)     { mDashboard.getTelemetry().addData(first, second); }
+    public Item addData(Target target, String first, String second) {
+        Item result = new Item();
+        if (target == Target.DRIVER_STATION && mDriverStation != null) {
+            result.mItems.put(Target.DRIVER_STATION,mDriverStation.addData(first, second));
+        } else if (target == Target.DASHBOARD && mDashboard != null) {
+            result.mItems.put(Target.DASHBOARD,mDashboard.getTelemetry().addData(first, second));
+        }
+        return result;
     }
+
+    public Item addData(String first, String second) {
+        Item result = new Item();
+        if (mDriverStation != null) {
+            result.mItems.put(Target.DRIVER_STATION,mDriverStation.addData(first, second));
+        }
+        if (mDashboard != null)     {
+            result.mItems.put(Target.DASHBOARD,mDashboard.getTelemetry().addData(first, second));
+        }
+        return result;
+    }
+
+
+    public void removeItem(Target target, Item item) {
+        if (target == Target.DRIVER_STATION &&
+                mDriverStation != null &&
+                item.mItems.containsKey(Target.DRIVER_STATION )) {
+            mDriverStation.removeItem(item.mItems.get(Target.DRIVER_STATION));
+        } else if (target == Target.DASHBOARD &&
+                mDashboard != null &&
+                item.mItems.containsKey(Target.DRIVER_STATION )) {
+            mDashboard.getTelemetry().removeItem(item.mItems.get(Target.DASHBOARD));
+        }
+    }
+
+    public void removeItem(Item item) {
+        if (mDriverStation != null &&
+                item.mItems.containsKey(Target.DRIVER_STATION )) {
+            mDriverStation.removeItem(item.mItems.get(Target.DRIVER_STATION));
+        }
+        if ( mDashboard != null &&
+                item.mItems.containsKey(Target.DRIVER_STATION )) {
+            mDashboard.getTelemetry().removeItem(item.mItems.get(Target.DASHBOARD));
+        }
+    }
+
 
     public void update(Target target) {
         if (target == Target.DRIVER_STATION && mDriverStation != null) {

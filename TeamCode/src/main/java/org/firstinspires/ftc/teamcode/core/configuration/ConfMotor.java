@@ -44,6 +44,9 @@ public class ConfMotor implements ConfComponent{
         public String  direction()           { return mDirection; }
         public boolean shallReverseEncoder() { return mShallReverseEncoder; }
 
+        public void    shallReverseEncoder(boolean Value) { mShallReverseEncoder = Value; }
+        public void    direction(String Value)            { mDirection = Value; }
+
         public boolean check() {
 
             boolean is_hwmap_valid = true;

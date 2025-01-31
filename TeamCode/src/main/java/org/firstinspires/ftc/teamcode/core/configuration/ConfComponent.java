@@ -14,11 +14,11 @@ public interface ConfComponent {
 
     /* --------------- Accessors -------------- */
     boolean isValid();
-    boolean shallMock();
     String  name();
 
     /* ------------------ I/O ----------------- */
     void    read(JSONObject reader);
+    void    write(JSONObject writer);
     String  log();
 
 }

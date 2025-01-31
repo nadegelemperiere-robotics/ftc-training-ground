@@ -28,20 +28,20 @@ import java.util.Objects;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 /* Tools includes */
 import org.firstinspires.ftc.teamcode.core.tools.Logger;
 
 public class Configuration {
 
     // Current working configuration
-    static public final String sCurrentConfiguration = "v1";
+    static public final String sCurrentConfiguration = "v0";
 
-    static final String sHardwareKey = "hardware";
-    static final String sSoftwareKey = "software";
-    static final String sMotorsKey   = "motors";
-    static final String sImusKey     = "imus";
-    static final String sServosKey   = "servos";
+    static final String sHardwareKey    = "hardware";
+    static final String sSoftwareKey    = "software";
+    static final String sMotorsKey      = "motors";
+    static final String sImusKey        = "imus";
+    static final String sServosKey      = "servos";
+    static final String sOdometersKey   = "odometers";
 
     // Loggers
     Logger                          mLogger;
@@ -51,28 +51,33 @@ public class Configuration {
     boolean                         mValid;
 
     // Hardaware configuration
-    public Map<String, ConfMotor>   mMotors;
-    public Map<String, ConfImu>     mImus;
-    public Map<String, ConfServo>   mServos;
+    Map<String, ConfMotor>          mMotors;
+    Map<String, ConfImu>            mImus;
+    Map<String, ConfServo>          mServos;
+    Map<String, ConfOdometer>       mOdometers;
+
 
     /* ------------- Constructors ------------- */
     public Configuration(Logger logger) {
         mLogger = logger;
 
-        mMotors = new LinkedHashMap<>();
-        mImus   = new LinkedHashMap<>();
-        mServos = new LinkedHashMap<>();
+        mMotors     = new LinkedHashMap<>();
+        mImus       = new LinkedHashMap<>();
+        mServos     = new LinkedHashMap<>();
+        mOdometers  = new LinkedHashMap<>();
+
     }
 
     public Configuration(Configuration copy) {
 
-        mLogger   = copy.mLogger;
-        mFilename = copy.mFilename;
-        mValid    = copy.mValid;
+        mLogger     = copy.mLogger;
+        mFilename   = copy.mFilename;
+        mValid      = copy.mValid;
 
-        mMotors = new LinkedHashMap<>();
-        mImus   = new LinkedHashMap<>();
-        mServos = new LinkedHashMap<>();
+        mMotors     = new LinkedHashMap<>();
+        mImus       = new LinkedHashMap<>();
+        mServos     = new LinkedHashMap<>();
+        mOdometers  = new LinkedHashMap<>();
 
         for (Map.Entry<String, ConfMotor> entry : copy.mMotors.entrySet()) {
             mMotors.put(entry.getKey(), new ConfMotor(entry.getValue()));
@@ -83,12 +88,17 @@ public class Configuration {
         for (Map.Entry<String, ConfServo> entry : copy.mServos.entrySet()) {
             mServos.put(entry.getKey(), new ConfServo(entry.getValue()));
         }
+        for (Map.Entry<String, ConfOdometer> entry : copy.mOdometers.entrySet()) {
+            mOdometers.put(entry.getKey(), new ConfOdometer(entry.getValue()));
+        }
+
     }
 
     /* --------------- Accessors -------------- */
-    public Map<String, ConfMotor> motors() { return mMotors; }
-    public Map<String, ConfImu>   imus()   { return mImus; }
-    public Map<String, ConfServo> servos() { return mServos; }
+    public Map<String, ConfMotor>       motors()       { return mMotors; }
+    public Map<String, ConfImu>         imus()         { return mImus; }
+    public Map<String, ConfServo>       servos()       { return mServos; }
+    public Map<String, ConfOdometer>    odometers()    { return mOdometers; }
 
     /* ------------------ I/O ----------------- */
     public void read() throws IOException, JSONException {
@@ -120,6 +130,8 @@ public class Configuration {
         mMotors.clear();
         mImus.clear();
         mServos.clear();
+        mOdometers.clear();
+
         if(jsonObject.has(Configuration.sHardwareKey)) {
             JSONObject hardware = jsonObject.getJSONObject(Configuration.sHardwareKey);
 
@@ -160,6 +172,20 @@ public class Configuration {
                     mServos.put(key, new ConfServo(key, mLogger));
                     Objects.requireNonNull(mServos.get(key)).read(servos.getJSONObject(key));
                     if (!Objects.requireNonNull(mServos.get(key)).isValid()) {
+                        mValid = false;
+                    }
+                }
+            }
+
+            if(hardware.has(Configuration.sOdometersKey)) {
+                JSONObject odometers = hardware.getJSONObject(Configuration.sOdometersKey);
+                Iterator<String> keys = odometers.keys();
+                while (keys.hasNext()) {
+
+                    String key = keys.next();
+                    mOdometers.put(key, new ConfOdometer(key, mLogger));
+                    Objects.requireNonNull(mOdometers.get(key)).read(odometers.getJSONObject(key));
+                    if (!Objects.requireNonNull(mOdometers.get(key)).isValid()) {
                         mValid = false;
                     }
                 }
@@ -210,6 +236,19 @@ public class Configuration {
                 servos.put(key, servoJson);
             }
             hardware.put(Configuration.sServosKey, servos);
+        }
+
+        // Write odometers
+        if (!mOdometers.isEmpty()) {
+            JSONObject odometers = new JSONObject();
+            for (Map.Entry<String, ConfOdometer> entry : mOdometers.entrySet()) {
+                String key = entry.getKey();
+                ConfOdometer odometer = entry.getValue();
+                JSONObject odometerJson = new JSONObject();
+                odometer.write(odometerJson);
+                odometers.put(key, odometerJson);
+            }
+            hardware.put(Configuration.sOdometersKey, odometers);
         }
 
         // Add hardware object to the main JSON object
@@ -271,6 +310,19 @@ public class Configuration {
         confstring.append("<summary style=\"font-size: 12px; font-weight: 500\"> SERVOS </summary>\n");
         confstring.append("<ul>\n");
         mServos.forEach((key, value) -> {
+            confstring.append("<li style=\"padding-left:10px;font-size: 14px\"> ")
+                    .append(key);
+            confstring.append(value.log());
+            confstring.append("</li>");
+        });
+        confstring.append("</ul>\n");
+        confstring.append("</details>\n");
+
+        confstring.append("-------------------------\n");
+        confstring.append("<details>\n");
+        confstring.append("<summary style=\"font-size: 12px; font-weight: 500\"> ODOMETERS </summary>\n");
+        confstring.append("<ul>\n");
+        mOdometers.forEach((key, value) -> {
             confstring.append("<li style=\"padding-left:10px;font-size: 14px\"> ")
                     .append(key);
             confstring.append(value.log());

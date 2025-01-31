@@ -67,6 +67,30 @@ public class MotorSingle implements MotorComponent {
 
         if(mMotor  == null) { mReady = false; }
     }
+    public MotorSingle(ConfMotor.Controller conf, HardwareMap hwMap, Logger logger)
+    {
+        mReady  = true;
+
+        mLogger = logger;
+
+        mName   = conf.mapName();
+
+        mInvertPosition = 1;
+
+        mMotor = hwMap.tryGet(DcMotorEx.class, conf.mapName());
+        if(mMotor != null && sString2Direction.containsKey(conf.direction())) {
+            mMotor.setDirection(sString2Direction.get(conf.direction()));
+        }
+        else if(mMotor != null)                {
+            mMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
+        if(conf.shallReverseEncoder()) { mInvertPosition = -1; }
+
+        if(mMotor != null) { mMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); }
+
+        if(mMotor  == null) { mReady = false; }
+    }
+
 
     /* --------------------- Custom functions ---------------------- */
 
@@ -75,6 +99,9 @@ public class MotorSingle implements MotorComponent {
 
     @Override
     public String                       getName() { return mName; }
+
+    @Override
+    public boolean                      getEncoderCorrection() { return (mInvertPosition == -1);}
 
     /* --------------------- DcMotor functions --------------------- */
 

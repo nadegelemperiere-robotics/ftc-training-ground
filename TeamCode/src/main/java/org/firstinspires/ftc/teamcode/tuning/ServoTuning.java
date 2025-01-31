@@ -1,14 +1,21 @@
+/* -------------------------------------------------------
+   Copyright (c) [2025] Nadege LEMPERIERE
+   All rights reserved
+   -------------------------------------------------------
+   Servo tuning tool
+   ------------------------------------------------------- */
+
 package org.firstinspires.ftc.teamcode.tuning;
 
 /* System includes */
-import android.os.Environment;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/* Android includes */
+import android.os.Environment;
 
 /* Qualcomm includes */
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -166,19 +173,19 @@ public class ServoTuning extends LinearOpMode {
                     // Adapt configuration
                     if(!mCurrentConf.isEmpty()) {
                         ReverseProvider reverse = new ReverseProvider(mCurrentConf.get(0));
-                        FtcDashboard.getInstance().addConfigVariable(this.getClass().getSimpleName(),"REVERSE_CONF_1",reverse);
+                        FtcDashboard.getInstance().addConfigVariable(this.getClass().getSimpleName(),"REVERSE_1",reverse);
                     }
                     else {
-                        FtcDashboard.getInstance().removeConfigVariable(this.getClass().getSimpleName(),"REVERSE_CONF_1");
+                        FtcDashboard.getInstance().removeConfigVariable(this.getClass().getSimpleName(),"REVERSE_1");
                     }
                     if(mCurrentConf.size() >= 2) {
                         ReverseProvider reverse = new ReverseProvider(mCurrentConf.get(1));
-                        FtcDashboard.getInstance().addConfigVariable(this.getClass().getSimpleName(),"REVERSE_CONF_2",reverse);
+                        FtcDashboard.getInstance().addConfigVariable(this.getClass().getSimpleName(),"REVERSE_2",reverse);
 
                         FtcDashboard.getInstance().addConfigVariable(this.getClass().getSimpleName(),"MODE",mMode);
                     }
                     else {
-                        FtcDashboard.getInstance().removeConfigVariable(this.getClass().getSimpleName(),"REVERSE_CONF_2");
+                        FtcDashboard.getInstance().removeConfigVariable(this.getClass().getSimpleName(),"REVERSE_2");
                         FtcDashboard.getInstance().removeConfigVariable(this.getClass().getSimpleName(),"MODE");
                     }
 
@@ -190,7 +197,7 @@ public class ServoTuning extends LinearOpMode {
 
                 }
 
-                if( this.wasReverseChanged())
+                if( this.wasConfChanged())
                 {
                     this.stopServos();
                     this.reloadFromConf();
@@ -203,8 +210,6 @@ public class ServoTuning extends LinearOpMode {
                     TARGET_POS = this.getPosition();
                     FtcDashboard.getInstance().updateConfig();
                 }
-
-
 
 
                 // Manage controls
@@ -260,25 +265,27 @@ public class ServoTuning extends LinearOpMode {
             // Retrieve the list of hardware servo associated to current selected servo
             // (may be coupled, so there may be up to 2 of them)
             List<String> hwServos = mServosHw.get(mCurrentServo);
-            for (int i_servo = 0; i_servo < hwServos.size(); i_servo++) {
-                String servoHwName = hwServos.get(i_servo);
+            if(hwServos != null) {
+                for (int i_servo = 0; i_servo < hwServos.size(); i_servo++) {
+                    String servoHwName = hwServos.get(i_servo);
 
-                // Get current servo and its associated configuration
-                // which might have been changed through the dashboard
-                ServoComponent servo = null;
-                ConfServo.Controller conf = null;
+                    // Get current servo and its associated configuration
+                    // which might have been changed through the dashboard
+                    ServoComponent servo = null;
+                    ConfServo.Controller conf = null;
 
-                // Find the single servo associated to the hardware name
-                if (mServos.containsKey(servoHwName)) {
-                    servo = mServos.get(servoHwName);
-                }
-                if (mServoConfiguration.containsKey(servoHwName)) {
-                    conf = mServoConfiguration.get(servoHwName);
-                }
+                    // Find the single servo associated to the hardware name
+                    if (mServos.containsKey(servoHwName)) {
+                        servo = mServos.get(servoHwName);
+                    }
+                    if (mServoConfiguration.containsKey(servoHwName)) {
+                        conf = mServoConfiguration.get(servoHwName);
+                    }
 
-                if (conf != null && servo != null) {
-                    mCurrentConf.add(conf);
-                    mCurrentServoHw.add(servo);
+                    if (conf != null && servo != null) {
+                        mCurrentConf.add(conf);
+                        mCurrentServoHw.add(servo);
+                    }
                 }
             }
         }
@@ -332,7 +339,7 @@ public class ServoTuning extends LinearOpMode {
 
     private double getPosition()
     {
-        double result = -1;
+        double result = -1.0;
 
         for (int i_servo = 0; i_servo < mCurrentServoHw.size(); i_servo++) {
             ServoComponent hwServo = mCurrentServoHw.get(i_servo);
@@ -356,7 +363,7 @@ public class ServoTuning extends LinearOpMode {
     }
 
 
-    private boolean     wasReverseChanged()
+    private boolean     wasConfChanged()
     {
         boolean result = false;
 
@@ -382,8 +389,6 @@ public class ServoTuning extends LinearOpMode {
 
     private void        reloadFromConf()
     {
-        boolean result = false;
-
         List<Integer> to_remove = new ArrayList<>();
 
         for (int i_servo = 0; i_servo < mCurrentConf.size(); i_servo++) {
@@ -400,7 +405,7 @@ public class ServoTuning extends LinearOpMode {
                     to_remove.add(i_servo);
                     mServos.remove(hwServo.getName());
                     mServoConfiguration.remove(hwServo.getName());
-                    mServosHw.get(mCurrentServo).remove(hwServo.getName());
+                    Objects.requireNonNull(mServosHw.get(mCurrentServo)).remove(hwServo.getName());
                 }
             }
         }

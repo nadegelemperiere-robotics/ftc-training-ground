@@ -45,13 +45,26 @@ public class SmartGamepad {
         public SmartButton right_stick_button;
     }
 
+    public static class Axes {
+
+        public SmartAxis left_stick_x;
+        public SmartAxis left_stick_y;
+        public SmartAxis left_trigger;
+        public SmartAxis right_stick_x;
+        public SmartAxis right_stick_y;
+        public SmartAxis right_trigger;
+
+    }
+
     public  Buttons buttons;
+    public  Axes    axes;
 
             Logger  mLogger;
 
     public              SmartGamepad(Gamepad gamepad, Logger logger) {
 
         mLogger = logger;
+
         buttons = new Buttons();
         buttons.a = new SmartButton(gamepad, "a", logger);
         buttons.b = new SmartButton(gamepad, "b", logger);
@@ -78,6 +91,15 @@ public class SmartGamepad {
         buttons.right_stick_y_up    = new SmartButton(gamepad, "right_stick_y", logger, -1.0);
         buttons.right_stick_y_down  = new SmartButton(gamepad, "right_stick_y", logger, 1.0);
         buttons.right_stick_button  = new SmartButton(gamepad, "right_stick_button", logger);
+
+        axes = new Axes();
+        axes.left_stick_x = new SmartAxis(gamepad, "left_stick_x", logger);
+        axes.left_stick_y = new SmartAxis(gamepad, "left_stick_y", logger, -1.0);
+        axes.left_trigger = new SmartAxis(gamepad, "left_trigger", logger);
+        axes.right_stick_x = new SmartAxis(gamepad, "right_stick_x", logger);
+        axes.right_stick_y = new SmartAxis(gamepad, "right_stick_y", logger, -1.0);
+        axes.right_trigger = new SmartAxis(gamepad, "right_trigger", logger);
+
 
     }
 

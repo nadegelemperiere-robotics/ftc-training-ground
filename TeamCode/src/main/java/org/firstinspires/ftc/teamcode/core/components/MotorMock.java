@@ -63,6 +63,10 @@ public class MotorMock implements MotorComponent {
     @Override
     public String                       getName() { return mName; }
 
+    @Override
+    public boolean                      getEncoderCorrection() { return false; }
+
+
     /* --------------------- DcMotor functions --------------------- */
 
     @Override

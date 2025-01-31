@@ -101,6 +101,9 @@ public class MotorCoupled implements MotorComponent {
     @Override
     public String                       getName() { return mName; }
 
+    @Override
+    public boolean                      getEncoderCorrection() { return ((mFirstInvertPosition == -1) || (mSecondInvertPosition == -1)); }
+
     /* --------------------- DcMotor functions --------------------- */
 
     @Override
