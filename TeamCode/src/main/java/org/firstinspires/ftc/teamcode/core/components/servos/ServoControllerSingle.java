@@ -4,7 +4,7 @@
    -------------------------------------------------------
    Controller managing  single component servo
    ------------------------------------------------------- */
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.servos;
 
 /* Qualcomm includes */
 import com.qualcomm.robotcore.hardware.ServoController;
@@ -19,14 +19,18 @@ public class ServoControllerSingle implements ServoControllerComponent {
 
     boolean                 mReady;
 
+    String                  mName;
+
     ServoController         mController;
 
     /* -------------- Constructors --------------- */
-    public ServoControllerSingle(ServoController controller, Logger logger)
+    public ServoControllerSingle(ServoController controller, String name, Logger logger)
     {
         mReady      = true;
 
         mLogger     = logger;
+
+        mName       = name;
 
         mController = controller;
 

@@ -5,7 +5,7 @@
    Localization using OTOS sparkfun component
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.odometers;
 
 /* System includes */
 import java.util.LinkedList;
@@ -34,12 +34,12 @@ import org.firstinspires.ftc.teamcode.core.configuration.ConfOdometer;
 
 public class OpticalTrackingOdometer implements OdometerComponent {
 
-    static  final String sHwMapKey          = "hwmap";
-    static  final String sHeadingRatioKey   = "heading-ratio";
-    static  final String sPositionRatioKey  = "position-ratio";
-    static  final String sXOffsetKey        = "x-offset";
-    static  final String sYOffsetKey        = "y-offset";
-    static  final String sHeadingOffsetKey  = "heading-offset";
+    static  final public    String sHwMapKey          = "hwmap";
+    static  final public    String sHeadingRatioKey   = "heading-ratio";
+    static  final public    String sPositionRatioKey  = "position-ratio";
+    static  final public    String sXOffsetKey        = "x-offset";
+    static  final public    String sYOffsetKey        = "y-offset";
+    static  final public    String sHeadingOffsetKey  = "heading-offset";
 
     Logger                      mLogger;
 
@@ -71,6 +71,8 @@ public class OpticalTrackingOdometer implements OdometerComponent {
         double headingRatio = 1.0;
         double positionRatio = 1.0;
 
+        mLogger.addData("conf",config.log());
+
         Map<String, Double> parameters = config.parameters();
         if (parameters.containsKey(sHeadingRatioKey)) {
             Double param = parameters.get(sHeadingRatioKey);
@@ -82,14 +84,17 @@ public class OpticalTrackingOdometer implements OdometerComponent {
         }
         if (parameters.containsKey(sXOffsetKey)) {
             Double param = parameters.get(sXOffsetKey);
+            mLogger.addData(sXOffsetKey,"" + param);
             if(param != null) { offset = new SparkFunOTOS.Pose2D(param,offset.y,offset.h); }
         }
         if (parameters.containsKey(sYOffsetKey)) {
             Double param = parameters.get(sYOffsetKey);
+            mLogger.addData(sYOffsetKey,"" + param);
             if(param != null) { offset = new SparkFunOTOS.Pose2D(offset.x,param,offset.h); }
         }
         if (parameters.containsKey(sHeadingOffsetKey)) {
             Double param = parameters.get(sHeadingOffsetKey);
+            mLogger.addData(sHeadingOffsetKey,"" + param);
             if(param != null) { offset = new SparkFunOTOS.Pose2D(offset.x,offset.y,param); }
         }
 
@@ -97,6 +102,7 @@ public class OpticalTrackingOdometer implements OdometerComponent {
             mOtos.setLinearUnit(DistanceUnit.INCH);
             mOtos.setAngularUnit(AngleUnit.RADIANS);
 
+            mLogger.addData("offset",""+offset);
             mOtos.setOffset(offset);
             mOtos.setLinearScalar(positionRatio);
             mOtos.setAngularScalar(headingRatio);
@@ -148,9 +154,9 @@ public class OpticalTrackingOdometer implements OdometerComponent {
     @Override
     public void         log() {
         if (mReady) {
-            mLogger.addData("x","" + mCurrentPose.position.x + " inches");
-            mLogger.addData("y","" + mCurrentPose.position.y + " inches");
-            mLogger.addData("heading","" + mCurrentPose.heading.toDouble() + " rad");
+            mLogger.addData("x",mCurrentPose.position.x + " inches");
+            mLogger.addData("y",mCurrentPose.position.y + " inches");
+            mLogger.addData("heading",mCurrentPose.heading.toDouble() + " rad");
         }
     }
 }

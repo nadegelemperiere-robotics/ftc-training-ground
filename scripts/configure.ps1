@@ -29,7 +29,7 @@ if ($LASTEXITCODE -eq 0) {
 
 # Push robot configuration file
 Write-Host "--> Pushing robot configuration file"
-$confRobotFilePath = Join-Path -Path $scriptPath -ChildPath "..\conf\robot\$c.json"
+$confRobotFilePath = Join-Path -Path $scriptPath -ChildPath "..\conf\processing\$c.json"
 $remotePath = "/sdcard/FIRST/$c.json"
 
 adb push $confRobotFilePath $remotePath

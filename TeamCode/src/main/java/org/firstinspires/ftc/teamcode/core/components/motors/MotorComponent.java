@@ -9,7 +9,7 @@
    - Synchronizing 2 coupled motors
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.motors;
 
 /* System includes */
 import java.util.Map;

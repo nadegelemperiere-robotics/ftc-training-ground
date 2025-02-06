@@ -25,8 +25,6 @@ import org.firstinspires.ftc.teamcode.core.tools.Logger;
 public class ConfMotor implements ConfComponent{
 
     static final String sMockKey       = "mock";
-    static final String sControllerKey = "controllers";
-    static final String sPositionsKey  = "positions";
 
     public static class Controller {
 
@@ -74,8 +72,7 @@ public class ConfMotor implements ConfComponent{
     
     String                  mName;
 
-    List<Controller>        mControllers;
-    Map<String, Integer>    mPositions; // Optional, can be null
+    List<Controller>        mMOtors;
 
     boolean                 mValid;
     boolean                 mShallMock;
@@ -89,7 +86,6 @@ public class ConfMotor implements ConfComponent{
         mShallMock = true;
 
         mControllers = new ArrayList<>();
-        mPositions   = new LinkedHashMap<>();
 
     }
 
@@ -100,7 +96,6 @@ public class ConfMotor implements ConfComponent{
         mValid     = copy.mValid;
         mShallMock = copy.mShallMock;
 
-        mPositions = new LinkedHashMap<>(copy.mPositions);
         mControllers = new ArrayList<>();
         for(int i_ctrl = 0; i_ctrl < copy.mControllers.size(); i_ctrl ++) {
 
@@ -122,21 +117,11 @@ public class ConfMotor implements ConfComponent{
     public  String  name()      { return mName; }
 
     public  List<Controller>        controllers() { return mControllers; }
-    public  Map<String, Integer>    positions()   { return mPositions; }
 
     public  Controller              controller(int index) {
         Controller result = null;
         if(mControllers.size() > index) {
             result = mControllers.get(index);
-        }
-        return result;
-    }
-
-    public int                      position(String name) {
-        int result = -1;
-        if(mPositions.containsKey(name)) {
-            Integer object = mPositions.get(name);
-            if(object != null) { result = (int)object; }
         }
         return result;
     }
@@ -299,7 +284,7 @@ public class ConfMotor implements ConfComponent{
         }
         motorLog.append("</ul>\n");
         motorLog.append("</details>\n");
-        
+
         if(!mPositions.isEmpty()) {
             motorLog.append("<details>\n");
             motorLog.append("<summary style=\"font-size: 12px; font-weight: 500\"> POSITIONS </summary>\n");
@@ -316,7 +301,7 @@ public class ConfMotor implements ConfComponent{
             motorLog.append("</ul>\n");
             motorLog.append("</details>\n");
         }
-        
+
         return motorLog.toString();
     }
 

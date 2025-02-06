@@ -10,7 +10,7 @@
    threshold
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.gamepads;
 
 /* System includes */
 import java.lang.reflect.Field;
@@ -21,41 +21,48 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 /* Tools includes */
 import org.firstinspires.ftc.teamcode.core.tools.Logger;
 
-public class SmartAxis {
+public class SmartButton {
+
+    static  final   double  sTriggerThreshold = 0;
 
                     Logger  mLogger;
 
                     Gamepad mGamepad;
                     String  mName;
 
+                    boolean mWasPressed;
                     double  mMultiplier;
 
-    public SmartAxis(Gamepad gamepad, String name, Logger logger) {
+    public SmartButton(Gamepad gamepad, String name, Logger logger) {
         mLogger     = logger;
         mGamepad    = gamepad;
         mName       = name;
+        mWasPressed = false;
         mMultiplier = 1.0;
     }
-    public SmartAxis(Gamepad gamepad, String name, Logger logger, double multiplier) {
+    public SmartButton(Gamepad gamepad, String name, Logger logger, double multiplier) {
         mLogger     = logger;
         mGamepad    = gamepad;
         mName       = name;
+        mWasPressed = false;
         mMultiplier = multiplier;
     }
 
-    public double value() throws NoSuchFieldException, IllegalAccessException {
+    public boolean pressed() throws NoSuchFieldException, IllegalAccessException {
 
-        double result = 0;
+        boolean result = false;
 
         if(mGamepad != null) {
 
             Field field = Gamepad.class.getDeclaredField(mName);
             Object status = field.get(mGamepad);
             if(status != null) {
-                if (field.getType() == double.class) {
-                    result = ((double) status * mMultiplier);
+                if (field.getType() == boolean.class) {
+                    result = (boolean) status;
+                } else if (field.getType() == double.class) {
+                    result = ((double) status * mMultiplier > sTriggerThreshold);
                 } else if (field.getType() == float.class) {
-                    result = ((float) status * mMultiplier);
+                    result = ((float) status * mMultiplier > sTriggerThreshold);
                 }
             }
 
@@ -64,4 +71,12 @@ public class SmartAxis {
         return result;
     }
 
+    public boolean pressedOnce() throws NoSuchFieldException, IllegalAccessException, NullPointerException {
+
+        boolean is_pressed = this.pressed();
+        boolean result = is_pressed && !mWasPressed;
+        mWasPressed = is_pressed;
+        
+        return result;
+    }
 }

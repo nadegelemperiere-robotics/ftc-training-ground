@@ -5,7 +5,7 @@
    A single servo
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.servos;
 
 /* System includes */
 import java.util.List;
@@ -37,11 +37,13 @@ public class ServoSingle implements ServoComponent {
         mReady = true;
 
         mLogger = logger;
-        mController = null;
-
-        mDirection = Servo.Direction.FORWARD;
 
         mName = conf.name();
+
+        mController = null;
+        mServo      = null;
+        mDirection  = Servo.Direction.FORWARD;
+
 
         List<ConfServo.Controller> controllers = conf.controllers();
         if((controllers.size() == 1) && !conf.shallMock()) {
@@ -57,7 +59,7 @@ public class ServoSingle implements ServoComponent {
         if(mServo  == null) { mReady = false; }
 
         if(mReady) {
-            mController = new ServoControllerSingle(mServo.getController(), mLogger);
+            mController = new ServoControllerSingle(mServo.getController(), mName, mLogger);
         }
     }
     public ServoSingle(ConfServo.Controller conf, HardwareMap hwMap, Logger logger)
@@ -77,7 +79,7 @@ public class ServoSingle implements ServoComponent {
         if(mServo  == null) { mReady = false; }
 
         if(mReady) {
-            mController = new ServoControllerSingle(mServo.getController(), mLogger);
+            mController = new ServoControllerSingle(mServo.getController(), mName, mLogger);
         }
     }
 

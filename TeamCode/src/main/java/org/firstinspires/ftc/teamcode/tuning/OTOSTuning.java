@@ -29,6 +29,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.config.ValueProvider;
 
 /* Tools includes */
+import org.firstinspires.ftc.teamcode.core.components.OpticalTrackingOdometer;
 import org.firstinspires.ftc.teamcode.core.tools.Logger;
 
 /* Configuration includes */
@@ -37,6 +38,7 @@ import org.firstinspires.ftc.teamcode.core.configuration.Configuration;
 
 /* Components includes */
 import org.firstinspires.ftc.teamcode.core.components.OdometerComponent;
+import org.firstinspires.ftc.teamcode.core.components.OpticalTrackingOdometer;
 
 @Config
 @TeleOp(name = "OTOSTuning", group = "Tuning")
@@ -104,13 +106,13 @@ public class OTOSTuning extends LinearOpMode {
                 mOtosConfiguration = odometers.get("otos");
             }
             if(mOtosConfiguration == null) throw new InvalidParameterException("Not otos based odometer found in configuration");
-            mPreviousOtosConfiguration = mOtosConfiguration;
+            mPreviousOtosConfiguration = new ConfOdometer(mOtosConfiguration);
 
             for (Map.Entry<String, Double> param : mOtosConfiguration.parameters().entrySet()) {
                 ParamProvider parameter = new ParamProvider(mOtosConfiguration.parameters(), param.getKey());
                 FtcDashboard.getInstance().addConfigVariable(this.getClass().getSimpleName(),param.getKey(),parameter);
             }
-            mOdometer = OdometerComponent.factory(mOtosConfiguration, hardwareMap, mLogger);
+            mOdometer = OdometerComponent.factory(mOtosConfiguration, null, null, hardwareMap, mLogger);
 
             FtcDashboard.getInstance().updateConfig();
             mLogger.update();
@@ -123,8 +125,10 @@ public class OTOSTuning extends LinearOpMode {
 
                 // Manage configuration change
                 if(!mPreviousOtosConfiguration.equals(mOtosConfiguration)) {
-                    mOdometer = OdometerComponent.factory(mOtosConfiguration, hardwareMap, mLogger);
-                    mPreviousOtosConfiguration = mOtosConfiguration;
+                    mLogger.addData("Configuration","changed");
+                    FtcDashboard.getInstance().updateConfig();
+                    mOdometer = OdometerComponent.factory(mOtosConfiguration, null, null, hardwareMap, mLogger);
+                    mPreviousOtosConfiguration = new ConfOdometer(mOtosConfiguration);
                     STEP = Step.STOP;
                 }
 
@@ -185,6 +189,7 @@ public class OTOSTuning extends LinearOpMode {
                 mOdometer.update();
                 mOdometer.log();
 
+                mLogger.addLine(mOtosConfiguration.log());
                 mUpdatedConfiguration.log();
 
                 mLogger.update();
@@ -220,7 +225,7 @@ public class OTOSTuning extends LinearOpMode {
                 break;
 
             case UPDATE :
-                mOtosConfiguration.parameters().put("heading-ratio", 3600 / Math.toDegrees(mHeadingRatioRadTurned));
+                mOtosConfiguration.parameters().put(OpticalTrackingOdometer.sHeadingRatioKey, 3600 / Math.toDegrees(mHeadingRatioRadTurned));
                 break;
         }
 
@@ -242,7 +247,7 @@ public class OTOSTuning extends LinearOpMode {
                 break;
             case UPDATE :
                 pose = mOdometer.getPose();
-                mOtosConfiguration.parameters().put("heading-offset", Math.atan2(pose.position.y,pose.position.x));
+                mOtosConfiguration.parameters().put(OpticalTrackingOdometer.sHeadingOffsetKey, Math.atan2(pose.position.y,pose.position.x));
                 break;
         }
 
@@ -267,7 +272,7 @@ public class OTOSTuning extends LinearOpMode {
             case UPDATE:
                 pose = mOdometer.getPose();
                 distance = Math.sqrt(pose.position.x * pose.position.x + pose.position.y * pose.position.y);
-                mOtosConfiguration.parameters().put("position-ratio", mPositionRatioDistance.get() / distance);
+                mOtosConfiguration.parameters().put(OpticalTrackingOdometer.sPositionRatioKey, mPositionRatioDistance.get() / distance);
                 break;
         }
 
@@ -290,13 +295,13 @@ public class OTOSTuning extends LinearOpMode {
                     mTemporaryItems.add(mLogger.addData("Y Offset", "" + -0.5 * pose.position.y));
                 }
                 else {
-                    telemetry.addLine( "<p style=\"font-size: 12px\">Rotate the robot 180 degrees and align it to the corner again.</p>");
+                    mLogger.addLine( "<p style=\"font-size: 12px\">Rotate the robot 180 degrees and align it to the corner again.</p>");
                 }
                 break;
             case UPDATE:
                 pose = mOdometer.getPose();
-                mOtosConfiguration.parameters().put("offset-x", -0.5 * pose.position.x);
-                mOtosConfiguration.parameters().put("offset-y", -0.5 * pose.position.y);
+                mOtosConfiguration.parameters().put(OpticalTrackingOdometer.sXOffsetKey, -0.5 * pose.position.x);
+                mOtosConfiguration.parameters().put(OpticalTrackingOdometer.sYOffsetKey, -0.5 * pose.position.y);
                 break;
         }
 

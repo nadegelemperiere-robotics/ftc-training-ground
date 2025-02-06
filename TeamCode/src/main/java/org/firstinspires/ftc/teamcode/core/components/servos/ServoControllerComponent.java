@@ -8,7 +8,7 @@
    - Synchronizing 2 coupled servos
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.servos;
 
 /* Qualcomm includes */
 import com.qualcomm.robotcore.hardware.ServoController;

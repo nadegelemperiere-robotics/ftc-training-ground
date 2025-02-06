@@ -66,7 +66,7 @@ public class ConfImu implements ConfComponent{
     public  boolean shallMock() { return mShallMock; }
     public  String  name()      { return mName;      }
 
-    public  String  hardware()  { return mHwMap;         }
+    public  String  mapName()   { return mHwMap;         }
     public  String  logo()      { return mLogoDirection; }
     public  String  usb()       { return mUsbDirection;  }
 

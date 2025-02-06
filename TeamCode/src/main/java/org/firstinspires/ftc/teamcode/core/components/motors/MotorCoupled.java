@@ -10,7 +10,7 @@
    shall be the same model
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.motors;
 
 /* System includes */
 import java.util.List;
@@ -55,7 +55,9 @@ public class MotorCoupled implements MotorComponent {
         mName   = conf.name();
 
         mDirection = DcMotor.Direction.FORWARD;
-        mFirstInvertPosition = 1;
+        mFirst  = null;
+        mSecond = null;
+        mFirstInvertPosition  = 1;
         mSecondInvertPosition = 1;
 
         List<ConfMotor.Controller> controllers = conf.controllers();

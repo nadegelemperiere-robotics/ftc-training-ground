@@ -10,7 +10,7 @@
    shall be the same model
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.motors;
 
 /* Qualcomm includes */
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -46,6 +46,7 @@ public class MotorSingle implements MotorComponent {
 
         mName   = conf.name();
 
+        mMotor = null;
         mInvertPosition = 1;
 
         if((conf.controllers().size() == 1) && !conf.shallMock()) {

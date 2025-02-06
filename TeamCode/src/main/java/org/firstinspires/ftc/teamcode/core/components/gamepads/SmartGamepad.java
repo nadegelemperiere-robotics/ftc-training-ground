@@ -5,7 +5,7 @@
    Gamepad extended management
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.gamepads;
 
 /* Qualcomm includes */
 import com.qualcomm.robotcore.hardware.Gamepad;

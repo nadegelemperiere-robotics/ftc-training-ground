@@ -17,17 +17,36 @@ import com.acmerobotics.dashboard.FtcDashboard;
 /* Tools includes */
 import org.firstinspires.ftc.teamcode.core.tools.Logger;
 
+/* Configuration includes */
+import org.firstinspires.ftc.teamcode.core.configuration.Configuration;
+
+/* Functions includes */
+import org.firstinspires.ftc.teamcode.core.functions.control.Control;
+
+
 @TeleOp
 public class TeleOpMode extends OpMode {
 
-    Logger mLogger;
+    Logger          mLogger;
+
+    Configuration   mConfiguration;
+
+    Control         mControl;
 
 
     @Override
     public void init(){
 
         try {
+            // Log initialization
             mLogger = new Logger(telemetry, FtcDashboard.getInstance());
+
+            // Configuration initialization
+            mConfiguration = new Configuration(mLogger);
+            mConfiguration.read();
+            mConfiguration.log();
+
+            mControl = new Control(List<gamepad> gamepads);
         }
         catch(Exception e){
 
@@ -38,6 +57,8 @@ public class TeleOpMode extends OpMode {
     public void loop (){
 
         try {
+
+            mControl.loop();
 
         }
         catch(Exception e){

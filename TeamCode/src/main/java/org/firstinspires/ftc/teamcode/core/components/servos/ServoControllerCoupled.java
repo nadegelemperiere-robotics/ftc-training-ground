@@ -5,7 +5,7 @@
    Coupled Controller managing coupled servos together
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.servos;
 
 /* Qualcomm includes */
 import com.qualcomm.robotcore.hardware.ServoController;
@@ -20,21 +20,32 @@ public class ServoControllerCoupled implements ServoControllerComponent {
 
     boolean                 mReady;
 
+    String                  mName;
+
     ServoController         mFirst;
     ServoController         mSecond;
 
     /* -------------- Constructors --------------- */
-    public ServoControllerCoupled(ServoController first, ServoController second, Logger logger)
+    public ServoControllerCoupled(ServoController first, ServoController second, String name, Logger logger)
     {
         mReady  = true;
 
         mLogger = logger;
+
+        mName   = name;
 
         mFirst  = first;
         mSecond = second;
 
         if(mFirst  == null) { mReady = false; }
         if(mSecond == null) { mReady = false; }
+
+        if(mReady && mFirst.equals(mSecond)) {
+            // If coupled servos have the same controller, it won't be possible to power one
+            // without powering the other. It won't be possible to pilot them separately and
+            // check if coupling won't destroy them.
+            mLogger.addLine("!! WRN !! : Coupled servos " + mName + " have same controller.");
+        }
     }
 
     /* --------------------- Custom functions ---------------------- */

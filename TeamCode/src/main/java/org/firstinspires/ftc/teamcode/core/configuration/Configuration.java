@@ -42,6 +42,7 @@ public class Configuration {
     static final String sImusKey        = "imus";
     static final String sServosKey      = "servos";
     static final String sOdometersKey   = "odometers";
+    static final String sEffectorsKey   = "effectors";
 
     // Loggers
     Logger                          mLogger;
@@ -56,6 +57,9 @@ public class Configuration {
     Map<String, ConfServo>          mServos;
     Map<String, ConfOdometer>       mOdometers;
 
+    // Software configuration
+    Map<String, ConfEffector>       mEffectors;
+
 
     /* ------------- Constructors ------------- */
     public Configuration(Logger logger) {
@@ -65,6 +69,8 @@ public class Configuration {
         mImus       = new LinkedHashMap<>();
         mServos     = new LinkedHashMap<>();
         mOdometers  = new LinkedHashMap<>();
+
+        mEffectors  = new LinkedHashMap<>();
 
     }
 
@@ -92,6 +98,12 @@ public class Configuration {
             mOdometers.put(entry.getKey(), new ConfOdometer(entry.getValue()));
         }
 
+        mEffectors  = new LinkedHashMap<>();
+
+        for (Map.Entry<String, ConfEffector> entry : copy.mEffectors.entrySet()) {
+            mEffectors.put(entry.getKey(), new ConfEffector(entry.getValue()));
+        }
+
     }
 
     /* --------------- Accessors -------------- */
@@ -99,6 +111,7 @@ public class Configuration {
     public Map<String, ConfImu>         imus()         { return mImus; }
     public Map<String, ConfServo>       servos()       { return mServos; }
     public Map<String, ConfOdometer>    odometers()    { return mOdometers; }
+    public Map<String, ConfEffector>    effectors()    { return mEffectors; }
 
     /* ------------------ I/O ----------------- */
     public void read() throws IOException, JSONException {
@@ -132,10 +145,10 @@ public class Configuration {
         mServos.clear();
         mOdometers.clear();
 
-        if(jsonObject.has(Configuration.sHardwareKey)) {
+        if (jsonObject.has(Configuration.sHardwareKey)) {
             JSONObject hardware = jsonObject.getJSONObject(Configuration.sHardwareKey);
 
-            if(hardware.has(Configuration.sMotorsKey)) {
+            if (hardware.has(Configuration.sMotorsKey)) {
                 JSONObject motors = hardware.getJSONObject(Configuration.sMotorsKey);
                 Iterator<String> keys = motors.keys();
                 while (keys.hasNext()) {
@@ -149,7 +162,7 @@ public class Configuration {
                 }
             }
 
-            if(hardware.has(Configuration.sImusKey)) {
+            if (hardware.has(Configuration.sImusKey)) {
                 JSONObject imus = hardware.getJSONObject(Configuration.sImusKey);
                 Iterator<String> keys = imus.keys();
                 while (keys.hasNext()) {
@@ -163,7 +176,7 @@ public class Configuration {
                 }
             }
 
-            if(hardware.has(Configuration.sServosKey)) {
+            if (hardware.has(Configuration.sServosKey)) {
                 JSONObject servos = hardware.getJSONObject(Configuration.sServosKey);
                 Iterator<String> keys = servos.keys();
                 while (keys.hasNext()) {
@@ -177,7 +190,7 @@ public class Configuration {
                 }
             }
 
-            if(hardware.has(Configuration.sOdometersKey)) {
+            if (hardware.has(Configuration.sOdometersKey)) {
                 JSONObject odometers = hardware.getJSONObject(Configuration.sOdometersKey);
                 Iterator<String> keys = odometers.keys();
                 while (keys.hasNext()) {
@@ -186,6 +199,23 @@ public class Configuration {
                     mOdometers.put(key, new ConfOdometer(key, mLogger));
                     Objects.requireNonNull(mOdometers.get(key)).read(odometers.getJSONObject(key));
                     if (!Objects.requireNonNull(mOdometers.get(key)).isValid()) {
+                        mValid = false;
+                    }
+                }
+            }
+        }
+        if (jsonObject.has(Configuration.sSoftwareKey)) {
+            JSONObject hardware = jsonObject.getJSONObject(Configuration.sSoftwareKey);
+
+            if (hardware.has(Configuration.sEffectorsKey)) {
+                JSONObject effectors = hardware.getJSONObject(Configuration.sEffectorsKey);
+                Iterator<String> keys = effectors.keys();
+                while (keys.hasNext()) {
+
+                    String key = keys.next();
+                    mEffectors.put(key, new ConfEffector(key, mLogger));
+                    Objects.requireNonNull(mEffectors.get(key)).read(effectors.getJSONObject(key));
+                    if (!Objects.requireNonNull(mEffectors.get(key)).isValid()) {
                         mValid = false;
                     }
                 }
@@ -254,6 +284,25 @@ public class Configuration {
         // Add hardware object to the main JSON object
         jsonObject.put(Configuration.sHardwareKey, hardware);
 
+        // Prepare the hardware JSON object
+        JSONObject software = new JSONObject();
+
+        // Write motors
+        if (!mEffectors.isEmpty()) {
+            JSONObject effectors = new JSONObject();
+            for (Map.Entry<String, ConfEffector> entry : mEffectors.entrySet()) {
+                String key = entry.getKey();
+                ConfEffector effector = entry.getValue();
+                JSONObject effectorJson = new JSONObject();
+                effector.write(effectorJson);
+                effectors.put(key, effectorJson);
+            }
+            software.put(Configuration.sEffectorsKey, effectors);
+        }
+
+        // Add hardware object to the main JSON object
+        jsonObject.put(Configuration.sSoftwareKey, software);
+
         // Write JSON to file
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8))) {
             writer.write(jsonObject.toString(4)); // 4 is the indentation level for pretty printing
@@ -291,7 +340,6 @@ public class Configuration {
         confstring.append("</ul>\n");
         confstring.append("</details>\n");
 
-
         confstring.append("-------------------------\n");
         confstring.append("<details>\n");
         confstring.append("<summary style=\"font-size: 12px; font-weight: 500\"> IMUS </summary>\n");
@@ -323,6 +371,19 @@ public class Configuration {
         confstring.append("<summary style=\"font-size: 12px; font-weight: 500\"> ODOMETERS </summary>\n");
         confstring.append("<ul>\n");
         mOdometers.forEach((key, value) -> {
+            confstring.append("<li style=\"padding-left:10px;font-size: 14px\"> ")
+                    .append(key);
+            confstring.append(value.log());
+            confstring.append("</li>");
+        });
+        confstring.append("</ul>\n");
+        confstring.append("</details>\n");
+
+        confstring.append("-------------------------\n");
+        confstring.append("<details>\n");
+        confstring.append("<summary style=\"font-size: 12px; font-weight: 500\"> EFFECTORS </summary>\n");
+        confstring.append("<ul>\n");
+        mEffectors.forEach((key, value) -> {
             confstring.append("<li style=\"padding-left:10px;font-size: 14px\"> ")
                     .append(key);
             confstring.append(value.log());

@@ -5,7 +5,7 @@
    A container to mock servo behavior
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.servos;
 
 /* System includes */
 import static java.lang.Math.max;

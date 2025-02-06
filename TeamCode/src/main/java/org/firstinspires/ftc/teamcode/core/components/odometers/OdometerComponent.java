@@ -6,10 +6,10 @@
    and orientation on the mat
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.odometers;
 
-/* Json includes */
-import org.json.JSONObject;
+/* System includes */
+import java.util.Map;
 
 /* Qualcomm includes */
 import com.acmerobotics.roadrunner.Pose2d;
@@ -20,10 +20,12 @@ import org.firstinspires.ftc.teamcode.core.tools.Logger;
 
 /* Configuration includes */
 import org.firstinspires.ftc.teamcode.core.configuration.ConfOdometer;
+import org.firstinspires.ftc.teamcode.core.configuration.ConfMotor;
+import org.firstinspires.ftc.teamcode.core.configuration.ConfImu;
 
 public interface OdometerComponent {
 
-    static OdometerComponent factory(ConfOdometer config, HardwareMap hwMap, Logger logger) {
+    static OdometerComponent factory(ConfOdometer config, Map<String,ConfMotor> motors, ImuComponent imu, HardwareMap hwMap, Logger logger) {
 
         OdometerComponent result = null;
 
@@ -31,9 +33,11 @@ public interface OdometerComponent {
             case "otos":
                 result = new OpticalTrackingOdometer(config, hwMap, logger); break;
             case "2deadwheels":
-                result = new TwoDeadWheelsOdometer(config, hwMap, logger); break;
+                result = new TwoDeadWheelsOdometer(config, motors, imu, hwMap, logger); break;
             case "3deadwheels":
-                result = new ThreeDeadWheelsOdometer(config, hwMap, logger); break;
+                result = new ThreeDeadWheelsOdometer(config, motors, hwMap, logger); break;
+            case "driveencoders":
+                result = new DriveEncodersOdometer(config, motors, imu, hwMap, logger); break;
         }
 
         return result;

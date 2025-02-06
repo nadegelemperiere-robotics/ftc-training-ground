@@ -16,7 +16,7 @@
    This means for example that the 2 servos are the same model
    ------------------------------------------------------- */
 
-package org.firstinspires.ftc.teamcode.core.components;
+package org.firstinspires.ftc.teamcode.core.components.servos;
 
 /* System includes */
 import java.util.List;
@@ -53,10 +53,12 @@ public class ServoCoupled implements ServoComponent {
 
         mLogger = logger;
 
-        mDirection = Servo.Direction.FORWARD;
-        mController = null;
-
         mName = conf.name();
+
+        mFirst      = null;
+        mSecond     = null;
+        mDirection  = Servo.Direction.FORWARD;
+        mController = null;
 
         List<ConfServo.Controller> controllers = conf.controllers();
         if((controllers.size() == 2) && !conf.shallMock()) {
@@ -77,7 +79,7 @@ public class ServoCoupled implements ServoComponent {
         if(mSecond == null) { mReady = false; }
 
         if(mReady) {
-            mController = new ServoControllerCoupled(mFirst.getController(), mSecond.getController(), mLogger);
+            mController = new ServoControllerCoupled(mFirst.getController(), mSecond.getController(), mName, mLogger);
         }
     }
 

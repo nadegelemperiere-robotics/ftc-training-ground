@@ -1,55 +1,42 @@
 {
     "hardware" : {
         "motors": {
-            "front-left-wheel": {
-                "controllers": [
-                    { "hwmap": "frontLeft" }
-                ]
-            },
-            "front-right-wheel": {
-                "controllers": [
-                    { "hwmap": "frontRight", "direction": "reverse" }
-                ]
-            },
-            "back-left-wheel": {
-                "controllers": [
-                    { "hwmap": "backLeft" }
-                ]
-            },
-            "back-right-wheel": {
-                "controllers": [
-                    { "hwmap": "backRight",  "direction": "reverse"
-                    }
-                ]
-            },
-            "intake-slides": {
-                "controllers": [
-                    { "hwmap": "intakeSlidesLeft" },
-                    { "hwmap": "intakeSlidesRight", "direction": "reverse"}
-                ],
-                "positions": {
-                    "min": 0,
-                    "transfer": 179,
-                    "retracted": 250,
-                    "init": 300,
-                    "max": 315
-                }
-            },
-            "outtake-slides": {
-                "controllers": [
-                    { "hwmap": "outtakeSlidesLeft", "direction": "reverse" },
-                    { "hwmap": "outtakeSlidesRight" }
-                ],
-                "positions": {
-                    "min": 0,
-                    "transfer": 0,
-                    "retracted": 1300,
-                    "max": 3726,
-                    "high-basket": 10,
-                    "low-basket": 10,
-                    "low-submersible": 10,
-                    "high-submersible": 10
-                }
+            "front-left-wheel":  [ { "hwmap": "frontLeft" } ],
+            "front-right-wheel": [ { "hwmap": "frontRight", "direction": "reverse" } ],
+            "back-left-wheel":   [ { "hwmap": "backLeft" } ],
+            "back-right-wheel":  [ { "hwmap": "backRight",  "direction": "reverse" } ],
+            "intake-slides": [
+                { "hwmap": "intakeSlidesLeft" },
+                { "hwmap": "intakeSlidesRight", "direction": "reverse"}
+            ],
+            "outtake-slides": [
+                { "hwmap": "outtakeSlidesLeft", "direction": "reverse" },
+                { "hwmap": "outtakeSlidesRight" }
+            ]
+        },
+        "servos" : {
+            "intake-elbow-pitch": [ { "hwmap": "intakeElbowPitch" } ],
+            "intake-wrist-roll":  [ { "hwmap": "intakeWristRoll" } ],
+            "intake-claw":        [ { "hwmap": "intakeClaw" } ],
+            "outtake-wrist-roll": [ { "hwmap": "outtakeWristRoll" } ],
+            "outtake-claw":       [ { "hwmap": "outtakeClaw" } ],
+            "intake-arm-pitch": [
+                { "hwmap": "intakeArmPitchLeft" },
+                { "hwmap": "intakeArmPitchRight", "reverse" : true }
+            ],
+            "outtake-elbow-pitch": [
+                { "hwmap": "outtakeElbowPitchLeft" },
+                { "hwmap": "outtakeElbowPitchRight", "reverse" : true }
+            ]
+        },
+        "odometers": {
+            "otos": {
+                "hwmap": "sensor_otos",
+                "heading-offset" : 0.0,
+                "x-offset" : 0.0,
+                "y-offset" : 0.0,
+                "heading-ratio" : 1.0,
+                "position-ratio" : 1.0
             }
         },
         "imus": {
@@ -58,37 +45,71 @@
                 "logo-direction": "up",
                 "usb-direction": "right"
             }
-        },
-        "servos" : {
-            "intake-arm-pitch": {
-                "controllers": [
-                    { "hwmap": "intakeArmPitchLeft" },
-                    { "hwmap": "intakeArmPitchRight", "reverse" : true }
-                ],
+        }
+    },
+    "software" : {
+        "effectors" : {
+            "intake-slides" : {
+                "motor" : "intake-slides",
                 "positions": {
-                    "transfer": 0.97,
-                    "over-sub": 0.5,
-                    "low": 0.44,
-                    "grab": 0.39,
-                    "off": 1.0
+                    "min": 0,
+                    "retracted": 250,
+                    "max": 315,
+                    "transfer-exchange": 168,
+                    "transfer-away": 300,
+                    "autonomous-sample-pick": 260
+                },
+                "pid": {
+                    "p": 12.0,
+                    "i": 0.05,
+                    "d": 0,
+                    "f": 0
+                },
+                "powers": {
+                    "set-position": 0.9,
+                    "hold-position": 0.3,
+                    "stop": 0
                 }
             },
-            "intake-elbow-pitch": {
-                "controllers": [
-                    { "hwmap": "intakeElbowPitch" }
-                ],
+            "outtake-slides" : {
+                "motor" : "outtake-slides",
                 "positions": {
-                    "transfer": 0.18,
-                    "grab": 0.68,
-                    "look": 0.7,
-                    "over-sub": 0.73,
-                    "off": 0.68
+                    "min": 0,
+                    "retracted": 1300,
+                    "max": 3726,
+                    "transfer": 0,
+                    "autonomous-sample-ascend" : 710,
+                    "autonomous-specimen-submersible-under" : 690,
+                    "autonomous-specimen-submersible-over" : 870
+                },
+                "powers": {
+                    "set-position": 1.0,
+                    "hold-position": 0.3,
+                    "stop": 0
                 }
             },
-            "intake-wrist-roll": {
-                "controllers": [
-                    { "hwmap": "intakeWristRoll" }
-                ],
+            "intake-arm" : {
+                "servo" :  "intake-arm-pitch",
+                "positions": {
+                    "transfer"          : 0.97,
+                    "over-submersible"  : 0.5,
+                    "low"               : 0.44,
+                    "grab"              : 0.39,
+                    "off"               : 1.0
+                }
+            },
+            "intake-elbow" : {
+                "servo" :  "intake-elbow-pitch",
+                "positions": {
+                    "transfer"          : 0.18,
+                    "grab"              : 0.68,
+                    "look"              : 0.7,
+                    "over-submersible"  : 0.73,
+                    "off"               : 0.68
+                }
+            },
+            "intake-wrist": {
+                "servo" :  "intake-wrist-roll",
                 "positions" : {
                     "-2": 0.27,
                     "-1": 0.335,
@@ -102,30 +123,23 @@
                 }
             },
             "intake-claw": {
-                "controllers": [
-                    { "hwmap": "intakeClaw" }
-                ],
+                "servo" : "intake-claw",
                 "positions": {
                     "closed": 1.0,
                     "microrelease": 0.9,
                     "open": 0.62
                 }
             },
-            "outtake-elbow-pitch": {
-                "controllers": [
-                    { "hwmap": "outtakeElbowPitchLeft" },
-                    { "hwmap": "outtakeElbowPitchRight", "reverse" : true }
-                ],
+            "outtake-elbow": {
+                "servo" : "outtake-elbow-pitch",
                 "positions": {
                     "transfer": 0.103,
                     "drop": 0.05,
                     "off": 0.08
                 }
             },
-            "outtake-wrist-roll": {
-                "controllers": [
-                    { "hwmap": "outtakeWristRoll" }
-                ],
+            "outtake-wrist": {
+                "servo" : "outtake-wrist-roll",
                 "positions" : {
                     "-2": 0.0,
                     "-1": 0.0675,
@@ -139,9 +153,7 @@
                 }
             },
             "outtake-claw": {
-                "controllers": [
-                    { "hwmap": "outtakeClaw" }
-                ],
+                "servo" : "outtake-claw",
                 "positions": {
                     "closed": 0.67,
                     "microrelease": 0.65,
@@ -149,15 +161,46 @@
                 }
             }
         },
-        "odometers": {
-            "otos": {
-                "hwmap": "sensor_otos",
-                "heading-offset" : 0.0,
-                "x-offset" : 0.0,
-                "y-offset" : 0.0,
-                "heading-ratio" : 1.0,
-                "position-ratio" : 1.0
+        "sequencing" : {
+            "grab" : {
+                "intake-closed": [
+                    { "effector": "intake-claw",    "position": "closed",           "tolerance": 0.01, "timeout": 500 }
+                ],
+                "intake-up": [
+                    { "effector": "intake-arm",     "position": "over-submersible", "tolerance": 0.01, "timeout": 500 },
+                    { "effector": "intake-elbow",   "position": "over-submersible", "tolerance": 0.01, "timeout": 500 }
+                ]
+            },
+            "transfer" : {
+                "intake-slides-away": [
+                    { "effector": "intake-slides",  "position": "transfer-away",     "tolerance": 20,   "timeout": 2000}
+                ],
+                "arms-positioned": [
+                    { "effector": "outtake-claw",   "position": "open",              "tolerance": 0.01, "timeout": 100 },
+                    { "effector": "outtake-wrist",  "position": "0",                 "tolerance": 0.01, "timeout": 100 },
+                    { "effector": "intake-wrist",   "position": "0",                 "tolerance": 0.01, "timeout": 100 },
+                    { "effector": "outtake-elbow",  "position": "transfer",          "tolerance": 0.01, "timeout": 1000},
+                    { "effector": "intake-arm",     "position": "transfer",          "tolerance": 0.01, "timeout": 100 },
+                    { "effector": "intake-elbow",   "position": "transfer",          "tolerance": 0.01, "timeout": 1000}
+                ],
+                "intake-microreleased-and-outtake-slides-ready" : [
+                    { "effector": "outtake-slides", "position": "transfer-exchange", "tolerance": 5,    "timeout": 2000},
+                    { "effector": "intake-claw",    "position": "microrelease",      "tolerance": 0.01, "timeout": 200 }
+                ],
+                "intake-closed" : [
+                    { "effector": "intake-claw",    "position": "closed",            "tolerance": 0.01, "timeout": 200 }
+                ],
+                "intake-ready" : [
+                    { "effector": "intake-slides",  "position": "transfer-exchange", "tolerance": 0.01, "timeout": 200 }
+                ],
+                "outtake-closed" : [
+                    { "effector": "outtake-claw",   "position": "closed",            "tolerance": 0.01, "timeout": 500 }
+                ],
+                "intake-open" : [
+                    { "effector": "intake-claw",    "position": "open",              "tolerance": 0.01, "timeout": 200 }
+                ]
             }
         }
     }
 }
+

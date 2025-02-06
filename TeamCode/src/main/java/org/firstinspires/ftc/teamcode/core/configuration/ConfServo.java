@@ -258,7 +258,7 @@ public class ConfServo implements ConfComponent {
         }
         motorLog.append("</ul>\n");
         motorLog.append("</details>\n");
-        
+
         if(!mPositions.isEmpty()) {
             motorLog.append("<details>\n");
             motorLog.append("<summary style=\"font-size: 12px; font-weight: 500\"> POSITIONS </summary>\n");
@@ -275,7 +275,7 @@ public class ConfServo implements ConfComponent {
             motorLog.append("</ul>\n");
             motorLog.append("</details>\n");
         }
-        
+
         return motorLog.toString();
     }
 
